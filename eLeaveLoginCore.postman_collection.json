@@ -2,7 +2,7 @@
     "info": {
         "_postman_id": "eleave-login-2024",
         "name": "eLeave Login API",
-        "description": "API for eLeave Login - Authentication Service",
+        "description": "API for eLeave Login - Authentication Service\n\n## Features\n- **Authentication**: Multiple authentication strategies (Local, AD, Email)\n- **User Management**: Full CRUD operations for users\n- **Encryption Utilities**: SHA256 and AES encryption/decryption\n\n## Pre-request Scripts\n- All authentication requests automatically encode passwords with base64 (atob format expected by API)\n- All protected endpoints check for valid access token\n- Encryption tests chain together (encrypt → verify, encrypt → decrypt)\n\n## Post-response Scripts\n- Login responses automatically extract and store access tokens\n- Encryption tests verify results and store encrypted values for subsequent tests\n- User management responses log results for debugging\n\n## Environment Variables\n- `base_url`: API base URL (default: http://localhost:3003)\n- `access_token`: JWT token for authenticated requests\n- `test_password`: Password for encryption tests\n- `aes_key`: AES encryption key (default: 'secret key 122')",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -35,7 +35,25 @@
                                 "local"
                             ]
                         },
-                        "description": "Login with local database authentication"
+                        "description": "Login with local database authentication",
+                        "preRequestScript": "// Encode password with atob (base64) as expected by the API\n// In production, you would decode this on the client side\n// The API expects base64 encoded password\nvar password = pm.environment.get('password') || 'password';\nvar encodedPassword = btoa(password);\n\n// Update the request body with encoded password\nvar body = JSON.parse(pm.request.body.raw);\nbody.password = encodedPassword;\npm.request.body.raw = JSON.stringify(body);",
+                        "script": {
+                            "id": "login-local-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    if (response.access_token) {",
+                                "        pm.environment.set('access_token', response.access_token);",
+                                "        console.log('Login successful. Token:', response.access_token);",
+                                "    } else {",
+                                "        console.log('Login failed. No token received.');",
+                                "    }",
+                                "} else {",
+                                "    console.log('Login failed. Status:', pm.response.code);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
@@ -64,7 +82,21 @@
                                 "ad"
                             ]
                         },
-                        "description": "Login with Active Directory authentication"
+                        "description": "Login with Active Directory authentication",
+                        "preRequestScript": "// Encode password with atob (base64) as expected by the API\nvar password = pm.environment.get('password') || 'password';\nvar encodedPassword = btoa(password);\n\nvar body = JSON.parse(pm.request.body.raw);\nbody.password = encodedPassword;\npm.request.body.raw = JSON.stringify(body);",
+                        "script": {
+                            "id": "login-ad-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    if (response.access_token) {",
+                                "        pm.environment.set('access_token', response.access_token);",
+                                "        console.log('AD Login successful. Token:', response.access_token);",
+                                "    }",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
@@ -93,7 +125,21 @@
                                 "email"
                             ]
                         },
-                        "description": "Login with email authentication"
+                        "description": "Login with email authentication",
+                        "preRequestScript": "// Encode password with atob (base64) as expected by the API\nvar password = pm.environment.get('password') || 'password';\nvar encodedPassword = btoa(password);\n\nvar body = JSON.parse(pm.request.body.raw);\nbody.password = encodedPassword;\npm.request.body.raw = JSON.stringify(body);",
+                        "script": {
+                            "id": "login-email-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    if (response.access_token) {",
+                                "        pm.environment.set('access_token', response.access_token);",
+                                "        console.log('Email Login successful. Token:', response.access_token);",
+                                "    }",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
@@ -122,7 +168,21 @@
                                 "ad-extend"
                             ]
                         },
-                        "description": "Login with extended Active Directory authentication"
+                        "description": "Login with extended Active Directory authentication",
+                        "preRequestScript": "// Encode password with atob (base64) as expected by the API\nvar password = pm.environment.get('password') || 'password';\nvar encodedPassword = btoa(password);\n\nvar body = JSON.parse(pm.request.body.raw);\nbody.password = encodedPassword;\npm.request.body.raw = JSON.stringify(body);",
+                        "script": {
+                            "id": "login-ad-extend-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    if (response.access_token) {",
+                                "        pm.environment.set('access_token', response.access_token);",
+                                "        console.log('AD Extended Login successful. Token:', response.access_token);",
+                                "    }",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 }
             ]
@@ -151,7 +211,18 @@
                                 "user"
                             ]
                         },
-                        "description": "Get all users (requires JWT)"
+                        "description": "Get all users (requires JWT)",
+                        "preRequestScript": "// Check if access token is available\nif (!pm.environment.get('access_token')) {\n    console.log('Warning: No access token found. Please login first.');\n}",
+                        "script": {
+                            "id": "get-users-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    console.log('Total users:', response.length);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
@@ -182,7 +253,18 @@
                                 }
                             ]
                         },
-                        "description": "Get user by ID"
+                        "description": "Get user by ID",
+                        "preRequestScript": "// Check if access token is available\nif (!pm.environment.get('access_token')) {\n    console.log('Warning: No access token found. Please login first.');\n}",
+                        "script": {
+                            "id": "get-user-by-id-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    console.log('User retrieved:', response);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
@@ -214,7 +296,18 @@
                                 "user"
                             ]
                         },
-                        "description": "Create new user"
+                        "description": "Create new user",
+                        "preRequestScript": "// Check if access token is available\nif (!pm.environment.get('access_token')) {\n    console.log('Warning: No access token found. Please login first.');\n}",
+                        "script": {
+                            "id": "create-user-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    console.log('User created:', response);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
@@ -246,7 +339,18 @@
                                 "user"
                             ]
                         },
-                        "description": "Update user information"
+                        "description": "Update user information",
+                        "preRequestScript": "// Check if access token is available\nif (!pm.environment.get('access_token')) {\n    console.log('Warning: No access token found. Please login first.');\n}",
+                        "script": {
+                            "id": "update-user-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    console.log('User updated:', response);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
@@ -277,7 +381,19 @@
                                 }
                             ]
                         },
-                        "description": "Delete user"
+                        "description": "Delete user",
+                        "preRequestScript": "// Check if access token is available\nif (!pm.environment.get('access_token')) {\n    console.log('Warning: No access token found. Please login first.');\n}",
+                        "script": {
+                            "id": "delete-user-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    console.log('User deleted successfully');",
+                                "} else {",
+                                "    console.log('Failed to delete user. Status:', pm.response.code);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 }
             ]
@@ -288,9 +404,19 @@
                 {
                     "name": "Test Encrypt SHA256",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"password\": \"test\"\n}"
+                        },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/test-encrypt-sha256?password=test",
+                            "raw": "{{base_url}}/api/auth/test-encrypt-sha256",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -298,23 +424,39 @@
                                 "api",
                                 "auth",
                                 "test-encrypt-sha256"
-                            ],
-                            "query": [
-                                {
-                                    "key": "password",
-                                    "value": "test"
-                                }
                             ]
                         },
-                        "description": "Test SHA256 encryption"
+                        "description": "Test SHA256 encryption",
+                        "preRequestScript": "var CryptoJS = require('crypto-js');\n\n// Generate a random password for testing if not provided\nif (!pm.environment.get('test_password')) {\n    pm.environment.set('test_password', 'test' + Math.floor(Math.random() * 10000));\n}",
+                        "script": {
+                            "id": "sha256-encrypt-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    pm.environment.set('sha256_encrypted', response.encrypted);",
+                                "    console.log('SHA256 Encrypted:', response.encrypted);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
                     "name": "Test Verify SHA256",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"password\": \"test\",\n    \"encrypted\": \"{{sha256_encrypted}}\"\n}"
+                        },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/test-verify-sha256?password=test&aes=encrypted-data",
+                            "raw": "{{base_url}}/api/auth/test-verify-sha256",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -322,27 +464,40 @@
                                 "api",
                                 "auth",
                                 "test-verify-sha256"
-                            ],
-                            "query": [
-                                {
-                                    "key": "password",
-                                    "value": "test"
-                                },
-                                {
-                                    "key": "aes",
-                                    "value": "encrypted-data"
-                                }
                             ]
                         },
-                        "description": "Test SHA256 verification"
+                        "description": "Test SHA256 verification",
+                        "preRequestScript": "// Use the previously encrypted value from environment variable\nvar encrypted = pm.environment.get('sha256_encrypted');",
+                        "script": {
+                            "id": "sha256-verify-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    pm.test('SHA256 verification should be true', function () {",
+                                "        pm.expect(response.verified).to.equal(true);",
+                                "    });",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
                     "name": "Test Encrypt AES",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"password\": \"test\",\n    \"key\": \"secret key 122\"\n}"
+                        },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/test-encrypt?password=test",
+                            "raw": "{{base_url}}/api/auth/test-encrypt",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -350,23 +505,39 @@
                                 "api",
                                 "auth",
                                 "test-encrypt"
-                            ],
-                            "query": [
-                                {
-                                    "key": "password",
-                                    "value": "test"
-                                }
                             ]
                         },
-                        "description": "Test AES encryption"
+                        "description": "Test AES encryption",
+                        "preRequestScript": "// Set default key if not provided\nif (!pm.environment.get('aes_key')) {\n    pm.environment.set('aes_key', 'secret key 122');\n}",
+                        "script": {
+                            "id": "aes-encrypt-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    pm.environment.set('aes_encrypted', response.encrypted);",
+                                "    console.log('AES Encrypted:', response.encrypted);",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 },
                 {
                     "name": "Test Decrypt AES",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"encrypted\": \"{{aes_encrypted}}\",\n    \"key\": \"{{aes_key}}\"\n}"
+                        },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/test-decrypt?password=encrypted-data",
+                            "raw": "{{base_url}}/api/auth/test-decrypt",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -374,15 +545,23 @@
                                 "api",
                                 "auth",
                                 "test-decrypt"
-                            ],
-                            "query": [
-                                {
-                                    "key": "password",
-                                    "value": "encrypted-data"
-                                }
                             ]
                         },
-                        "description": "Test AES decryption"
+                        "description": "Test AES decryption",
+                        "preRequestScript": "// Use the previously encrypted value and key from environment variables\nvar encrypted = pm.environment.get('aes_encrypted');\nvar key = pm.environment.get('aes_key');",
+                        "script": {
+                            "id": "aes-decrypt-script",
+                            "exec": [
+                                "if (pm.response.successful) {",
+                                "    var response = pm.response.json();",
+                                "    pm.environment.set('aes_decrypted', response.decrypted);",
+                                "    pm.test('AES decryption should match original', function () {",
+                                "        pm.expect(response.decrypted).to.equal('test');",
+                                "    });",
+                                "}"
+                            ],
+                            "type": "text"
+                        }
                     }
                 }
             ]
@@ -398,6 +577,39 @@
             "key": "access_token",
             "value": "",
             "type": "string"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "id": "collection-prerequest-script",
+                "type": "text",
+                "exec": [
+                    "// Collection-level pre-request script",
+                    "// Initialize environment variables if not set",
+                    "if (!pm.environment.get('base_url')) {",
+                    "    pm.environment.set('base_url', 'http://localhost:3003');",
+                    "}",
+                    "if (!pm.environment.get('aes_key')) {",
+                    "    pm.environment.set('aes_key', 'secret key 122');",
+                    "}"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "id": "collection-test-script",
+                "type": "text",
+                "exec": [
+                    "// Collection-level test script",
+                    "// Log response time for all requests",
+                    "pm.test('Response time is reasonable', function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});"
+                ]
+            }
         }
     ]
 }
