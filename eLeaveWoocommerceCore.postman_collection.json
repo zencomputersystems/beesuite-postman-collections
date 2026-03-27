@@ -1,0 +1,1105 @@
+{
+    "info": {
+        "_postman_id": "eleave-woocommerce-2024",
+        "name": "eLeave WooCommerce API",
+        "description": "API for eLeave WooCommerce - WooCommerce Integration",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Products",
+            "item": [
+                {
+                    "name": "Get All Products",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        },
+                        "description": "Get all WooCommerce products"
+                    }
+                },
+                {
+                    "name": "Get Product by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/products/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "product-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get product by ID"
+                    }
+                },
+                {
+                    "name": "Create Product",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"New Product\",\n    \"type\": \"simple\",\n    \"regular_price\": \"19.99\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        },
+                        "description": "Create new product"
+                    }
+                },
+                {
+                    "name": "Update Product",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Product Name\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "product-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update product"
+                    }
+                },
+                {
+                    "name": "Delete Product",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{base_url}}/api/products/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "product-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete product"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Variations",
+            "item": [
+                {
+                    "name": "Get All Product Variations",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-variations",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-variations"
+                            ]
+                        },
+                        "description": "Get all product variations"
+                    }
+                },
+                {
+                    "name": "Get Product Variation by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-variations/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-variations",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "variation-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get product variation by ID"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Categories",
+            "item": [
+                {
+                    "name": "Get All Product Categories",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-categories",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-categories"
+                            ]
+                        },
+                        "description": "Get all product categories"
+                    }
+                },
+                {
+                    "name": "Get Product Category by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-categories/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-categories",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "category-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get product category by ID"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Tags",
+            "item": [
+                {
+                    "name": "Get All Product Tags",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-tags",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-tags"
+                            ]
+                        },
+                        "description": "Get all product tags"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Attributes",
+            "item": [
+                {
+                    "name": "Get All Product Attributes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-attributes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-attributes"
+                            ]
+                        },
+                        "description": "Get all product attributes"
+                    }
+                },
+                {
+                    "name": "Get Product Attribute by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-attributes/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-attributes",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "attribute-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get product attribute by ID"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Attribute Terms",
+            "item": [
+                {
+                    "name": "Get All Attribute Terms",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-attribute-terms",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-attribute-terms"
+                            ]
+                        },
+                        "description": "Get all product attribute terms"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Shipping Classes",
+            "item": [
+                {
+                    "name": "Get All Shipping Classes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-shipping-classes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-shipping-classes"
+                            ]
+                        },
+                        "description": "Get all product shipping classes"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Customers",
+            "item": [
+                {
+                    "name": "Get All Customers",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/customers",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "customers"
+                            ]
+                        },
+                        "description": "Get all WooCommerce customers"
+                    }
+                },
+                {
+                    "name": "Get Customer by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/customers/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "customers",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "customer-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get customer by ID"
+                    }
+                },
+                {
+                    "name": "Create Customer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"newcustomer@example.com\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/customers",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "customers"
+                            ]
+                        },
+                        "description": "Create new customer"
+                    }
+                },
+                {
+                    "name": "Update Customer",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Updated Name\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/customers/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "customers",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "customer-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update customer"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Orders",
+            "item": [
+                {
+                    "name": "Get All Orders",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders"
+                            ]
+                        },
+                        "description": "Get all WooCommerce orders"
+                    }
+                },
+                {
+                    "name": "Get Order by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "order-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get order by ID"
+                    }
+                },
+                {
+                    "name": "Create Order",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"customer_id\": 1,\n    \"line_items\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 2\n        }\n    ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders"
+                            ]
+                        },
+                        "description": "Create new order"
+                    }
+                },
+                {
+                    "name": "Update Order",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"completed\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "order-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update order status"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Order Notes",
+            "item": [
+                {
+                    "name": "Get All Order Notes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/order-notes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "order-notes"
+                            ]
+                        },
+                        "description": "Get all order notes"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Order Refunds",
+            "item": [
+                {
+                    "name": "Get All Refunds",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/refunds",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "refunds"
+                            ]
+                        },
+                        "description": "Get all order refunds"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Coupons",
+            "item": [
+                {
+                    "name": "Get All Coupons",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/coupons",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "coupons"
+                            ]
+                        },
+                        "description": "Get all WooCommerce coupons"
+                    }
+                },
+                {
+                    "name": "Get Coupon by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/coupons/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "coupons",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "coupon-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get coupon by ID"
+                    }
+                },
+                {
+                    "name": "Create Coupon",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"code\": \"DISCOUNT10\",\n    \"amount\": \"10\",\n    \"discount_type\": \"percent\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/coupons",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "coupons"
+                            ]
+                        },
+                        "description": "Create new coupon"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tax Rates",
+            "item": [
+                {
+                    "name": "Get All Tax Rates",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/tax-rates",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "tax-rates"
+                            ]
+                        },
+                        "description": "Get all tax rates"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tax Classes",
+            "item": [
+                {
+                    "name": "Get All Tax Classes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/tax-classes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "tax-classes"
+                            ]
+                        },
+                        "description": "Get all tax classes"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Shipping Zones",
+            "item": [
+                {
+                    "name": "Get All Shipping Zones",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/shipping-zones",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "shipping-zones"
+                            ]
+                        },
+                        "description": "Get all shipping zones"
+                    }
+                },
+                {
+                    "name": "Get Shipping Zone by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/shipping-zones/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "shipping-zones",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "zone-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get shipping zone by ID"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Shipping Zone Locations",
+            "item": [
+                {
+                    "name": "Get All Shipping Zone Locations",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/shipping-zone-locations",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "shipping-zone-locations"
+                            ]
+                        },
+                        "description": "Get all shipping zone locations"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Shipping Zone Methods",
+            "item": [
+                {
+                    "name": "Get All Shipping Zone Methods",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/shipping-zone-methods",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "shipping-zone-methods"
+                            ]
+                        },
+                        "description": "Get all shipping zone methods"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Shipping Methods",
+            "item": [
+                {
+                    "name": "Get All Shipping Methods",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/shipping-methods",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "shipping-methods"
+                            ]
+                        },
+                        "description": "Get all shipping methods"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Payment Gateways",
+            "item": [
+                {
+                    "name": "Get All Payment Gateways",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/payment-gateways",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payment-gateways"
+                            ]
+                        },
+                        "description": "Get all payment gateways"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Settings",
+            "item": [
+                {
+                    "name": "Get All Settings",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "settings"
+                            ]
+                        },
+                        "description": "Get all WooCommerce settings"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Setting Options",
+            "item": [
+                {
+                    "name": "Get All Setting Options",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/setting-options",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "setting-options"
+                            ]
+                        },
+                        "description": "Get all setting options"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "System Status",
+            "item": [
+                {
+                    "name": "Get System Status",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/system-status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "system-status"
+                            ]
+                        },
+                        "description": "Get WooCommerce system status"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "System Status Tools",
+            "item": [
+                {
+                    "name": "Get System Status Tools",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/system-status-tools",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "system-status-tools"
+                            ]
+                        },
+                        "description": "Get system status tools"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Data",
+            "item": [
+                {
+                    "name": "Get Data",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/data",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "data"
+                            ]
+                        },
+                        "description": "Get WooCommerce data"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Reports",
+            "item": [
+                {
+                    "name": "Get Reports",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/reports",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "reports"
+                            ]
+                        },
+                        "description": "Get WooCommerce reports"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Subscriptions",
+            "item": [
+                {
+                    "name": "Get All Subscriptions",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/subscriptions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions"
+                            ]
+                        },
+                        "description": "Get all subscriptions"
+                    }
+                },
+                {
+                    "name": "Get Subscription by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/subscriptions/:id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "subscription-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get subscription by ID"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Subscription Orders",
+            "item": [
+                {
+                    "name": "Get All Subscription Orders",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/subscription-orders",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscription-orders"
+                            ]
+                        },
+                        "description": "Get all subscription orders"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Subscription Notes",
+            "item": [
+                {
+                    "name": "Get All Subscription Notes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/subscription-notes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscription-notes"
+                            ]
+                        },
+                        "description": "Get all subscription notes"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Reviews",
+            "item": [
+                {
+                    "name": "Get All Product Reviews",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/product-reviews",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "product-reviews"
+                            ]
+                        },
+                        "description": "Get all product reviews"
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3005",
+            "type": "string"
+        }
+    ]
+}

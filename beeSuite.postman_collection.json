@@ -1,0 +1,88 @@
+{
+    "info": {
+        "_postman_id": "beesuite-main-2024",
+        "name": "beeSuite - All APIs",
+        "description": "Main collection for beeSuite project - Contains references to all API collections",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "eLeave Core",
+            "item": [
+                {
+                    "name": "eLeave Core API",
+                    "item": [],
+                    "description": "Import from: eLeaveCore.postman_collection.json"
+                }
+            ],
+            "description": "eLeave Core API - Leave Management System"
+        },
+        {
+            "name": "eLeave Tenant",
+            "item": [
+                {
+                    "name": "eLeave Tenant API",
+                    "item": [],
+                    "description": "Import from: eLeaveTenantCore.postman_collection.json"
+                }
+            ],
+            "description": "eLeave Tenant API - Multi-tenant Leave Management System"
+        },
+        {
+            "name": "beeWhere",
+            "item": [
+                {
+                    "name": "beeWhere Core API",
+                    "item": [],
+                    "description": "Import from: beeWhereCore.postman_collection.json"
+                }
+            ],
+            "description": "beeWhere API - Attendance and Workforce Management System"
+        },
+        {
+            "name": "eLeave Login",
+            "item": [
+                {
+                    "name": "eLeave Login API",
+                    "item": [],
+                    "description": "Import from: eLeaveLoginCore.postman_collection.json"
+                }
+            ],
+            "description": "eLeave Login API - Authentication Service"
+        },
+        {
+            "name": "Beescheduler",
+            "item": [
+                {
+                    "name": "Beescheduler Core API",
+                    "item": [],
+                    "description": "Import from: beeschedulerCore.postman_collection.json"
+                }
+            ],
+            "description": "Beescheduler API - Attendance Scheduling System"
+        },
+        {
+            "name": "eLeave WooCommerce",
+            "item": [
+                {
+                    "name": "eLeave WooCommerce API",
+                    "item": [],
+                    "description": "Import from: eLeaveWoocommerceCore.postman_collection.json"
+                }
+            ],
+            "description": "eLeave WooCommerce API - WooCommerce Integration"
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
