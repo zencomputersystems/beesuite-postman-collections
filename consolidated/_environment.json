@@ -1,0 +1,81 @@
+{
+    "id": "beesuite-consolidated-environment",
+    "name": "beeSuite Consolidated",
+    "values": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "eleave_core_url",
+            "value": "http://localhost:3000",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "eleave_tenant_url",
+            "value": "http://localhost:3001",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "beewhere_url",
+            "value": "http://localhost:3002",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "eleave_login_url",
+            "value": "http://localhost:3003",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "beescheduler_url",
+            "value": "http://localhost:3004",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "eleave_woocommerce_url",
+            "value": "http://localhost:3005",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "password",
+            "value": "password",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "aes_key",
+            "value": "secret key 122",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "aes_encrypted",
+            "value": "",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "aes_decrypted",
+            "value": "",
+            "type": "default",
+            "enabled": true
+        }
+    ],
+    "condition": null,
+    "sort": null,
+    "variable": []
+}
