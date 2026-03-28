@@ -28,8 +28,14 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_core_url}}/api/auth/login",
-                                    "host": ["{{eleave_core_url}}"],
-                                    "path": ["api", "auth", "login"]
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
                                 },
                                 "description": "Login to eLeave Core system",
                                 "script": {
@@ -67,8 +73,13 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_core_url}}/api/forgot-password",
-                                    "host": ["{{eleave_core_url}}"],
-                                    "path": ["api", "forgot-password"]
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "forgot-password"
+                                    ]
                                 },
                                 "description": "Request password reset for eLeave Core"
                             }
@@ -79,8 +90,14 @@
                                 "method": "GET",
                                 "url": {
                                     "raw": "{{eleave_core_url}}/api/invitation/:token",
-                                    "host": ["{{eleave_core_url}}"],
-                                    "path": ["api", "invitation", ":token"],
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "invitation",
+                                        ":token"
+                                    ],
                                     "variable": [
                                         {
                                             "key": "token",
@@ -107,8 +124,13 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_core_url}}/api/invitation",
-                                    "host": ["{{eleave_core_url}}"],
-                                    "path": ["api", "invitation"]
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "invitation"
+                                    ]
                                 },
                                 "description": "Set password for new user"
                             }
@@ -201,8 +223,15 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_tenant_url}}/api/auth/login/local",
-                                    "host": ["{{eleave_tenant_url}}"],
-                                    "path": ["api", "auth", "login", "local"]
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "local"
+                                    ]
                                 },
                                 "description": "Login to eLeave Tenant with local database",
                                 "script": {
@@ -236,8 +265,15 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_tenant_url}}/api/auth/login/ad",
-                                    "host": ["{{eleave_tenant_url}}"],
-                                    "path": ["api", "auth", "login", "ad"]
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "ad"
+                                    ]
                                 },
                                 "description": "Login to eLeave Tenant with Active Directory",
                                 "script": {
@@ -271,8 +307,14 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_tenant_url}}/api/admin/forgot-password",
-                                    "host": ["{{eleave_tenant_url}}"],
-                                    "path": ["api", "admin", "forgot-password"]
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "forgot-password"
+                                    ]
                                 },
                                 "description": "Request password reset for eLeave Tenant"
                             }
@@ -350,8 +392,14 @@
                                 },
                                 "url": {
                                     "raw": "{{beewhere_url}}/api/auth/login",
-                                    "host": ["{{beewhere_url}}"],
-                                    "path": ["api", "auth", "login"]
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
                                 },
                                 "description": "Login to beeWhere system",
                                 "script": {
@@ -457,8 +505,15 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_login_url}}/api/auth/login/local",
-                                    "host": ["{{eleave_login_url}}"],
-                                    "path": ["api", "auth", "login", "local"]
+                                    "host": [
+                                        "{{eleave_login_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "local"
+                                    ]
                                 },
                                 "description": "Login with local database authentication",
                                 "script": {
@@ -492,8 +547,15 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_login_url}}/api/auth/login/ad",
-                                    "host": ["{{eleave_login_url}}"],
-                                    "path": ["api", "auth", "login", "ad"]
+                                    "host": [
+                                        "{{eleave_login_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "ad"
+                                    ]
                                 },
                                 "description": "Login with Active Directory authentication",
                                 "script": {
@@ -527,8 +589,15 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_login_url}}/api/auth/login/email",
-                                    "host": ["{{eleave_login_url}}"],
-                                    "path": ["api", "auth", "login", "email"]
+                                    "host": [
+                                        "{{eleave_login_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "email"
+                                    ]
                                 },
                                 "description": "Login with email authentication",
                                 "script": {
@@ -562,8 +631,15 @@
                                 },
                                 "url": {
                                     "raw": "{{eleave_login_url}}/api/auth/login/ad-extend",
-                                    "host": ["{{eleave_login_url}}"],
-                                    "path": ["api", "auth", "login", "ad-extend"]
+                                    "host": [
+                                        "{{eleave_login_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "ad-extend"
+                                    ]
                                 },
                                 "description": "Login with extended Active Directory authentication",
                                 "script": {
@@ -609,8 +685,14 @@
                                 "method": "GET",
                                 "url": {
                                     "raw": "{{beescheduler_url}}/api/scheduler/status",
-                                    "host": ["{{beescheduler_url}}"],
-                                    "path": ["api", "scheduler", "status"]
+                                    "host": [
+                                        "{{beescheduler_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "scheduler",
+                                        "status"
+                                    ]
                                 },
                                 "description": "Get scheduler status"
                             }
@@ -621,8 +703,14 @@
                                 "method": "GET",
                                 "url": {
                                     "raw": "{{beescheduler_url}}/api/scheduler/clock-reminder",
-                                    "host": ["{{beescheduler_url}}"],
-                                    "path": ["api", "scheduler", "clock-reminder"]
+                                    "host": [
+                                        "{{beescheduler_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "scheduler",
+                                        "clock-reminder"
+                                    ]
                                 },
                                 "description": "Get clock reminder settings"
                             }
@@ -633,8 +721,14 @@
                                 "method": "GET",
                                 "url": {
                                     "raw": "{{beescheduler_url}}/api/scheduler/entitlement",
-                                    "host": ["{{beescheduler_url}}"],
-                                    "path": ["api", "scheduler", "entitlement"]
+                                    "host": [
+                                        "{{beescheduler_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "scheduler",
+                                        "entitlement"
+                                    ]
                                 },
                                 "description": "Get entitlement status"
                             }
@@ -651,8 +745,13 @@
                                 "method": "GET",
                                 "url": {
                                     "raw": "{{beescheduler_url}}/api/health",
-                                    "host": ["{{beescheduler_url}}"],
-                                    "path": ["api", "health"]
+                                    "host": [
+                                        "{{beescheduler_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "health"
+                                    ]
                                 },
                                 "description": "Health check endpoint"
                             }
