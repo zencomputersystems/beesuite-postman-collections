@@ -5,19 +5,47 @@
 - Postman (or Postman Canary)
 - beeSuite services running locally
 
+## Directory Structure
+
+```
+beesuite-postman-collections/
+├── README.md                    # Main documentation
+├── QUICKSTART.md                # This file
+├── API_SUMMARY.md               # API summary
+├── beeSuite.postman_collection.json  # Main collection (references all services)
+├── individual_collections/      # Individual service collections
+└── consolidated/                # Consolidated collection and tools
+```
+
 ## Installation
 
-1. **Import the Main Collection**
+### Option 1: Using Individual Collections
+
+1. **Import Individual Collections**
    - Open Postman
    - Click "Import" button
-   - Select `beeSuite.postman_collection.json`
+   - Select individual collection files from `individual_collections/`
 
 2. **Import the Environment**
    - Click "Import" button again
-   - Select `beeSuite-Development.postman_environment.json`
+   - Select `individual_collections/beeSuite-Development.postman_environment.json`
 
 3. **Select the Environment**
    - In Postman, select "beeSuite Development" from the environment dropdown
+
+### Option 2: Using the Consolidated Collection
+
+1. **Import the Consolidated Collection**
+   - Open Postman
+   - Click "Import" button
+   - Select `consolidated/beeSuite-Consolidated.postman_collection.json`
+
+2. **Import the Environment**
+   - Click "Import" button again
+   - Select `consolidated/beeSuite-Consolidated.postman_environment.json`
+
+3. **Select the Environment**
+   - In Postman, select "beeSuite Consolidated" from the environment dropdown
 
 ## Getting Started
 
@@ -66,7 +94,9 @@ npm run start:dev
 
 ### Step 3: Set the Token
 
-1. Click on the "beeSuite Development" environment
+1. Click on the "beeSuite Development" environment (for individual collections)
+   OR
+   Click on the "beeSuite Consolidated" environment (for consolidated collection)
 2. Find the `access_token` variable
 3. Paste the token you copied
 4. Click "Update"
@@ -77,14 +107,22 @@ Now you can test any endpoint in the collections. The authentication token will 
 
 ## Available Collections
 
+### Individual Collections (in `individual_collections/`)
+
 | Collection | Port | Description |
-|-----------|------|-------------|
+|---------|------|-------------|
 | eLeave Core | 3000 | Leave Management System |
 | eLeave Tenant | 3001 | Multi-tenant Management |
 | beeWhere | 3002 | Attendance & Workforce |
 | eLeave Login | 3003 | Authentication Service |
 | Beescheduler | 3004 | Scheduling System |
 | eLeave WooCommerce | 3005 | WooCommerce Integration |
+
+### Consolidated Collection (in `consolidated/`)
+
+| Collection | Description |
+|------|-------------|
+| beeSuite-Consolidated | Single collection with all endpoints from all services |
 
 ## Common Tasks
 

@@ -2,102 +2,78 @@
 
 This directory contains Postman API collections for the beeSuite project.
 
+## Directory Structure
+
+```
+beesuite-postman-collections/
+├── README.md                    # This file
+├── QUICKSTART.md                # Quick start guide
+├── API_SUMMARY.md               # API summary documentation
+├── beeSuite.postman_collection.json  # Main collection (references all services)
+├── individual_collections/      # Individual service collections
+│   ├── eLeaveCore.postman_collection.json
+│   ├── eLeaveTenantCore.postman_collection.json
+│   ├── beeWhereCore.postman_collection.json
+│   ├── eLeaveLoginCore.postman_collection.json
+│   ├── beeschedulerCore.postman_collection.json
+│   ├── eLeaveWoocommerceCore.postman_collection.json
+│   └── beeSuite-Development.postman_environment.json
+└── consolidated/                # Consolidated collection and tools
+    ├── README.md                # Consolidated collection documentation
+    ├── SUMMARY.md               # Consolidated collection summary
+    ├── beeSuite-Consolidated.postman_collection.json
+    ├── beeSuite-Consolidated.postman_environment.json
+    ├── combine.py               # Script to regenerate consolidated collection
+    └── combine.sh               # Script to regenerate consolidated collection
+```
+
 ## Overview
 
 The beeSuite project consists of multiple backend services, each with its own API. This Postman collection provides comprehensive API documentation and testing capabilities for all services.
 
 ## Available Collections
 
-### 1. eLeave Core (`eLeaveCore.postman_collection.json`)
-**Port:** 3000
+### Individual Collections (in `individual_collections/`)
 
-Leave Management System API for the main eLeave application.
+Each service has its own dedicated collection file:
 
-**Key Features:**
-- Authentication (Login, Forgot Password, Invitation)
-- User Management
-- Staff Management
-- Leave Types & Entitlements
-- Leave Applications
-- Company Management
-- Master Setup (Departments, Designations, etc.)
-- Reports & Analytics
-- Dashboard
-- Profile Picture Upload
-- Holiday Management
-- Overtime Management
+| Service | Port | Collection File |
+|---------|------|-----------------|
+| eLeave Core | 3000 | `eLeaveCore.postman_collection.json` |
+| eLeave Tenant | 3001 | `eLeaveTenantCore.postman_collection.json` |
+| beeWhere | 3002 | `beeWhereCore.postman_collection.json` |
+| eLeave Login | 3003 | `eLeaveLoginCore.postman_collection.json` |
+| Beescheduler | 3004 | `beeschedulerCore.postman_collection.json` |
+| eLeave WooCommerce | 3005 | `eLeaveWoocommerceCore.postman_collection.json` |
 
-**Base URL:** `http://localhost:3000`
+### Consolidated Collection (in `consolidated/`)
 
-### 2. eLeave Tenant (`eLeaveTenantCore.postman_collection.json`)
-**Port:** 3001
+For a unified collection with all endpoints:
 
-Multi-tenant Leave Management System API for tenant administration.
+| File | Description |
+|------|-------------|
+| `beeSuite-Consolidated.postman_collection.json` | Single collection with all endpoints |
+| `beeSuite-Consolidated.postman_environment.json` | Environment with all service URLs |
 
-**Key Features:**
-- Authentication (Local, AD)
-- Customer Management
-- Subscription Management
-- User Management (Tenant-specific)
-- Role Management
-- Dashboard
-- Activity Log
-- Support Tickets
-- Data Sync
+See `consolidated/README.md` for more details.
 
-**Base URL:** `http://localhost:3001`
+## Quick Start
 
-### 3. beeWhere (`beeWhereCore.postman_collection.json`)
-**Port:** 3002
+### Using Individual Collections
 
-Attendance and Workforce Management System API.
+1. Open Postman
+2. Import individual collection files from `individual_collections/`
+3. Import `beeSuite-Development.postman_environment.json`
+4. Select the environment and start testing
 
-**Key Features:**
-- Authentication
-- Clock Management (Clock In/Out, History)
-- Overtime Management
-- Client Management
-- User Info
-- Login Logs
-- Attendance Profiles
-- Location Management
-- Project Management
-- Contract Management
-- Reports
-- Map Integration
-- Support Tickets
+### Using the Consolidated Collection
 
-**Base URL:** `http://localhost:3002`
+1. Open Postman
+2. Import `consolidated/beeSuite-Consolidated.postman_collection.json`
+3. Import `consolidated/beeSuite-Consolidated.postman_environment.json`
+4. Select the environment and start testing
 
-### 4. eLeave Login (`eLeaveLoginCore.postman_collection.json`)
-**Port:** 3003
-
-Authentication Service API.
-
-**Key Features:**
-- Local Database Authentication
-- Active Directory Authentication
-- Email Authentication
-- User Management
-- Encryption Utilities (SHA256, AES)
-
-**Base URL:** `http://localhost:3003`
-
-### 5. Beescheduler (`beeschedulerCore.postman_collection.json`)
-**Port:** 3004
-
-Attendance Scheduling System API.
-
-**Key Features:**
-- Scheduler Status
-- Clock Reminders
-- Entitlement Management
-- Health Check
-
-**Base URL:** `http://localhost:3004`
-
-### 6. eLeave WooCommerce (`eLeaveWoocommerceCore.postman_collection.json`)
-**Port:** 3005
+See `consolidated/README.md` for more details.
 
 WooCommerce Integration API.
 
