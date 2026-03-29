@@ -6,25 +6,10 @@ This directory contains Postman API collections for the beeSuite project.
 
 ```
 beesuite-postman-collections/
-├── README.md                    # This file
-├── QUICKSTART.md                # Quick start guide
-├── API_SUMMARY.md               # API summary documentation
-├── beeSuite.postman_collection.json  # Main collection (references all services)
-├── individual_collections/      # Individual service collections
-│   ├── eLeaveCore.postman_collection.json
-│   ├── eLeaveTenantCore.postman_collection.json
-│   ├── beeWhereCore.postman_collection.json
-│   ├── eLeaveLoginCore.postman_collection.json
-│   ├── beeschedulerCore.postman_collection.json
-│   ├── eLeaveWoocommerceCore.postman_collection.json
-│   └── beeSuite-Development.postman_environment.json
-└── consolidated/                # Consolidated collection and tools
-    ├── README.md                # Consolidated collection documentation
-    ├── SUMMARY.md               # Consolidated collection summary
-    ├── beeSuite-Consolidated.postman_collection.json
-    ├── beeSuite-Consolidated.postman_environment.json
-    ├── combine.py               # Script to regenerate consolidated collection
-    └── combine.sh               # Script to regenerate consolidated collection
+├── README.md                              # This file
+├── QUICKSTART.md                          # Quick start guide
+├── API_SUMMARY.md                         # API summary documentation
+└── beeSuite_consolidated_API_collection.json  # Main consolidated collection
 ```
 
 ## Overview
@@ -33,47 +18,36 @@ The beeSuite project consists of multiple backend services, each with its own AP
 
 ## Available Collections
 
-### Individual Collections (in `individual_collections/`)
+### Consolidated Collection
 
-Each service has its own dedicated collection file:
+A single unified collection containing all API endpoints from all services:
 
-| Service | Port | Collection File |
-|---------|------|-----------------|
-| eLeave Core | 3000 | `eLeaveCore.postman_collection.json` |
-| eLeave Tenant | 3001 | `eLeaveTenantCore.postman_collection.json` |
-| beeWhere | 3002 | `beeWhereCore.postman_collection.json` |
-| eLeave Login | 3003 | `eLeaveLoginCore.postman_collection.json` |
-| Beescheduler | 3004 | `beeschedulerCore.postman_collection.json` |
-| eLeave WooCommerce | 3005 | `eLeaveWoocommerceCore.postman_collection.json` |
+| File | Description |
+|------|-------------|
+| `beeSuite_consolidated_API_collection.json` | Single collection with all endpoints from all services |
 
-### Consolidated Collection (in `consolidated/`)
+**Total Endpoints:** 149 requests across 6 services
+
+See the [Quick Start Guide](QUICKSTART.md) for usage instructions.
 
 For a unified collection with all endpoints:
 
 | File | Description |
 |------|-------------|
-| `beeSuite-Consolidated.postman_collection.json` | Single collection with all endpoints |
-| `beeSuite-Consolidated.postman_environment.json` | Environment with all service URLs |
+| `beeSuite_consolidated_API_collection.json` | Single collection with all endpoints |
 
-See `consolidated/README.md` for more details.
+See `QUICKSTART.md` for more details.
 
 ## Quick Start
-
-### Using Individual Collections
-
-1. Open Postman
-2. Import individual collection files from `individual_collections/`
-3. Import `beeSuite-Development.postman_environment.json`
-4. Select the environment and start testing
 
 ### Using the Consolidated Collection
 
 1. Open Postman
-2. Import `consolidated/beeSuite-Consolidated.postman_collection.json`
-3. Import `consolidated/beeSuite-Consolidated.postman_environment.json`
+2. Import `beeSuite_consolidated_API_collection.json`
+3. Configure your base URLs in Postman environments
 4. Select the environment and start testing
 
-See `consolidated/README.md` for more details.
+See `QUICKSTART.md` for more details.
 
 WooCommerce Integration API.
 

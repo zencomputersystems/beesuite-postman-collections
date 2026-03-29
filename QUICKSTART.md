@@ -9,43 +9,34 @@
 
 ```
 beesuite-postman-collections/
-├── README.md                    # Main documentation
-├── QUICKSTART.md                # This file
-├── API_SUMMARY.md               # API summary
-├── beeSuite.postman_collection.json  # Main collection (references all services)
-├── individual_collections/      # Individual service collections
-└── consolidated/                # Consolidated collection and tools
+├── README.md                              # Main documentation
+├── QUICKSTART.md                          # This file
+├── API_SUMMARY.md                         # API summary
+└── beeSuite_consolidated_API_collection.json  # Main consolidated collection
 ```
 
 ## Installation
 
-### Option 1: Using Individual Collections
+### Using the Consolidated Collection
 
-1. **Import Individual Collections**
+1. **Import the Collection**
    - Open Postman
    - Click "Import" button
-   - Select individual collection files from `individual_collections/`
+   - Select `beeSuite_consolidated_API_collection.json`
 
-2. **Import the Environment**
-   - Click "Import" button again
-   - Select `individual_collections/beeSuite-Development.postman_environment.json`
-
-3. **Select the Environment**
-   - In Postman, select "beeSuite Development" from the environment dropdown
-
-### Option 2: Using the Consolidated Collection
-
-1. **Import the Consolidated Collection**
-   - Open Postman
-   - Click "Import" button
-   - Select `consolidated/beeSuite-Consolidated.postman_collection.json`
-
-2. **Import the Environment**
-   - Click "Import" button again
-   - Select `consolidated/beeSuite-Consolidated.postman_environment.json`
+2. **Configure Environment Variables**
+   - Create a new Postman environment or update existing one
+   - Set the following variables:
+     - `base_url`: Main API base URL
+     - `eleave_core_url`: http://localhost:3000
+     - `eleave_tenant_url`: http://localhost:3001
+     - `beewhere_url`: http://localhost:3002
+     - `eleave_login_url`: http://localhost:3003
+     - `beescheduler_url`: http://localhost:3004
+     - `eleave_woocommerce_url`: http://localhost:3005
 
 3. **Select the Environment**
-   - In Postman, select "beeSuite Consolidated" from the environment dropdown
+   - In Postman, select your configured environment from the environment dropdown
 
 ## Getting Started
 

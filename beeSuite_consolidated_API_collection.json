@@ -1,0 +1,5490 @@
+{
+  "info": {
+    "_postman_id": "706d3d77-dfe5-4580-809e-307d92790c87",
+    "name": "beeSuite - All APIs",
+    "description": "Main collection for beeSuite project - Contains all API endpoints from all services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "585308",
+    "_collection_link": "https://go.postman.co/collection/585308-706d3d77-dfe5-4580-809e-307d92790c87?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "eLeave Core",
+      "item": [
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "Login",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// Login - eLeave Core",
+                      "pm.test('Login returns 201 Created', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test('Response contains access_token', function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.expect(jsonData).to.have.property('access_token');",
+                      "    pm.expect(jsonData.access_token).to.be.a('string').and.not.empty;",
+                      "});",
+                      "",
+                      "pm.test('Store JWT token for subsequent requests', function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    const JWT = 'JWT ' + jsonData.access_token;",
+                      "    pm.globals.set('JWT', JWT);",
+                      "    pm.collectionVariables.set('JWT', JWT);",
+                      "    pm.environment.set('access_token', jsonData.access_token);",
+                      "    pm.expect(pm.globals.get('JWT')).to.include('JWT ');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eleave_core_url}}/api/auth/login",
+                  "host": [
+                    "{{eleave_core_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Login to eLeave Core system"
+              },
+              "response": []
+            },
+            {
+              "name": "Forgot Password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"user@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{eleave_core_url}}/api/forgot-password",
+                  "host": [
+                    "{{eleave_core_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "forgot-password"
+                  ]
+                },
+                "description": "Request password reset for eLeave Core"
+              },
+              "response": []
+            },
+            {
+              "name": "Accept Invitation",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{eleave_core_url}}/api/invitation/:token",
+                  "host": [
+                    "{{eleave_core_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "invitation",
+                    ":token"
+                  ],
+                  "variable": [
+                    {
+                      "key": "token",
+                      "value": "invitation-token-here"
+                    }
+                  ]
+                },
+                "description": "Accept invitation sent by admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Set New Password",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": \"user-guid-here\",\n    \"password\": \"new-password\"\n}"
+                },
+                "url": {
+                  "raw": "{{eleave_core_url}}/api/invitation",
+                  "host": [
+                    "{{eleave_core_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "invitation"
+                  ]
+                },
+                "description": "Set password for new user"
+              },
+              "response": []
+            }
+          ],
+          "description": "eLeave Core Authentication endpoints",
+          "auth": {
+            "type": "noauth"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Authentication folder - test script",
+                  "pm.test('Authentication endpoint responds with 2xx or 4xx', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400, 401, 403, 404, 422]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User Management",
+          "item": [
+            {
+              "name": "Get All Users",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user"
+                  ]
+                },
+                "description": "Get all users (requires JWT)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get User by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get user by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"LOGIN_ID\": \"newuser\",\n    \"EMAIL\": \"newuser@example.com\",\n    \"NAME\": \"New User\",\n    \"TENANT_GUID\": \"tenant-guid-here\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user"
+                  ]
+                },
+                "description": "Create new user"
+              },
+              "response": []
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"EMAIL\": \"updated@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user"
+                  ]
+                },
+                "description": "Update user information"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    }
+                  ]
+                },
+                "description": "Delete user"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// User Management folder - test script",
+                  "const method = pm.request.method;",
+                  "const status = pm.response.code;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET user request returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('GET user response is an array or object', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('POST user request returns 201 or 200', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'PATCH') {",
+                  "    pm.test('PATCH user request returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'DELETE') {",
+                  "    pm.test('DELETE user request returns 200 or 204', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Staff Management",
+          "item": [
+            {
+              "name": "Get Staff List",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staff-list?type=all",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staff-list"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "all"
+                    }
+                  ]
+                },
+                "description": "Get staff list by permission"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Staff Directory",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staff-list/directory",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staff-list",
+                    "directory"
+                  ]
+                },
+                "description": "Get staff directory"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Leave Types",
+          "item": [
+            {
+              "name": "Get All Leave Types",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/leavetype",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "leavetype"
+                  ]
+                },
+                "description": "Get all leave types"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Leave Type by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/leavetype/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "leavetype",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "leavetype-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get leave type by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Leave Type",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"CODE\": \"CL\",\n    \"NAME\": \"Casual Leave\",\n    \"TENANT_GUID\": \"tenant-guid-here\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/leavetype",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "leavetype"
+                  ]
+                },
+                "description": "Create new leave type"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Leave Type",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"NAME\": \"Updated Leave Type\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/leavetype",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "leavetype"
+                  ]
+                },
+                "description": "Update leave type"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Leave Type",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/leavetype/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "leavetype",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "leavetype-guid-here"
+                    }
+                  ]
+                },
+                "description": "Delete leave type"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Leave Types folder - test script",
+                  "const method = pm.request.method;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET leave types returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('Leave types response is array or object', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('Create leave type returns 201 or 200', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'PATCH') {",
+                  "    pm.test('Update leave type returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'DELETE') {",
+                  "    pm.test('Delete leave type returns 200 or 204', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Leave Entitlement",
+          "item": [
+            {
+              "name": "Get All Entitlements",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/leavetype-entitlement",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leavetype-entitlement"
+                  ]
+                },
+                "description": "Get all leave entitlements"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Active Entitlements",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/leavetype-entitlement/active/list",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leavetype-entitlement",
+                    "active",
+                    "list"
+                  ]
+                },
+                "description": "Get all active leave type entitlements"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Entitlement by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/leavetype-entitlement/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leavetype-entitlement",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "entitlement-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get leave entitlement by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Entitlement",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"USER_GUID\": \"user-guid-here\",\n    \"ENTITLEMENT\": 12,\n    \"EFFECTIVE_DATE\": \"2024-01-01\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/leavetype-entitlement",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leavetype-entitlement"
+                  ]
+                },
+                "description": "Create leave entitlement"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Entitlement",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"ENTITLEMENT_GUID\": \"entitlement-guid-here\",\n    \"ENTITLEMENT\": 15\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/leavetype-entitlement",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leavetype-entitlement"
+                  ]
+                },
+                "description": "Update leave entitlement"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Leave Applications",
+          "item": [
+            {
+              "name": "Get All Leave Applications",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/leave",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leave"
+                  ]
+                },
+                "description": "Get all leave applications"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Leave Application by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/leave/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leave",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "leave-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get leave application by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Leave Application",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"START_DATE\": \"2024-06-01\",\n    \"END_DATE\": \"2024-06-05\",\n    \"REASON\": \"Annual leave\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/leave",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leave"
+                  ]
+                },
+                "description": "Create new leave application"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Leave Application",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"LEAVE_GUID\": \"leave-guid-here\",\n    \"STATUS\": \"approved\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/leave",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leave"
+                  ]
+                },
+                "description": "Update leave application status"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Leave Application",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/leave/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "leave",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "leave-guid-here"
+                    }
+                  ]
+                },
+                "description": "Delete leave application"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Leave Applications folder - test script",
+                  "const method = pm.request.method;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET leave returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('Leave response body is array or object', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('Create leave returns 201 or 200', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'PATCH') {",
+                  "    pm.test('Update leave returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'DELETE') {",
+                  "    pm.test('Delete leave returns 200 or 204', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Company Management",
+          "item": [
+            {
+              "name": "Get All Companies",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/company",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "company"
+                  ]
+                },
+                "description": "Get all companies"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Company Year End",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/company/year-end",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "company",
+                    "year-end"
+                  ]
+                },
+                "description": "Get company list with year end verification"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Master Setup",
+          "item": [
+            {
+              "name": "Get Master Data",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/master/:item",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "master",
+                    ":item"
+                  ],
+                  "variable": [
+                    {
+                      "key": "item",
+                      "value": "department"
+                    }
+                  ]
+                },
+                "description": "Get master data (department, designation, section, branch, bank, costcentre, country, employee_type, employee_status)"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Master Data",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"DATA\": [\n        {\n            \"CODE\": \"IT\",\n            \"NAME\": \"Information Technology\"\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/master/:item",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "master",
+                    ":item"
+                  ],
+                  "variable": [
+                    {
+                      "key": "item",
+                      "value": "department"
+                    }
+                  ]
+                },
+                "description": "Update master data"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Reports",
+          "item": [
+            {
+              "name": "Get Report by Type and User",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/report/:reporttype/:id/:startdate/:enddate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "report",
+                    ":reporttype",
+                    ":id",
+                    ":startdate",
+                    ":enddate"
+                  ],
+                  "variable": [
+                    {
+                      "key": "reporttype",
+                      "value": "leave-entitlement"
+                    },
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    },
+                    {
+                      "key": "startdate",
+                      "value": "2024-01-01"
+                    },
+                    {
+                      "key": "enddate",
+                      "value": "2024-12-31"
+                    }
+                  ]
+                },
+                "description": "Get individual report (reporttype: leave-entitlement, approval-override, apply-on-behalf, entitlement-claim, leave-taken, leave-adjustment, leave-cancellation, leave-rejected, leave-forfeited, employee-master-list, leave-utilized)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Report by Type (All Users)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/report/:reporttype/:startdate/:enddate",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "report",
+                    ":reporttype",
+                    ":startdate",
+                    ":enddate"
+                  ],
+                  "variable": [
+                    {
+                      "key": "reporttype",
+                      "value": "leave-entitlement"
+                    },
+                    {
+                      "key": "startdate",
+                      "value": "2024-01-01"
+                    },
+                    {
+                      "key": "enddate",
+                      "value": "2024-12-31"
+                    }
+                  ]
+                },
+                "description": "Get bundle report for all users"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Report (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"reportType\": \"leave-taken\",\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"2024-12-31\",\n    \"userId\": \"user-guid-here\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/report",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "report"
+                  ]
+                },
+                "description": "Get report using POST method"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Upcoming Joiner",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/dashboard/upcoming-joiner",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "dashboard",
+                    "upcoming-joiner"
+                  ]
+                },
+                "description": "Get upcoming joiner list"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Upcoming Leaver",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/dashboard/upcoming-leaver",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "dashboard",
+                    "upcoming-leaver"
+                  ]
+                },
+                "description": "Get upcoming leaver list"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Upcoming Birthday",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/dashboard/upcoming-birthday",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "dashboard",
+                    "upcoming-birthday"
+                  ]
+                },
+                "description": "Get upcoming birthday list"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Profile Picture",
+          "item": [
+            {
+              "name": "Upload Profile Picture",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"PROFILE_PICTURE\": \"base64-image-data\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/profile-picture",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "profile-picture"
+                  ]
+                },
+                "description": "Upload profile picture"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Profile Picture",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/profile-picture/:type",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "profile-picture",
+                    ":type"
+                  ],
+                  "variable": [
+                    {
+                      "key": "type",
+                      "value": "all"
+                    }
+                  ]
+                },
+                "description": "Get profile picture (type: all or personal)"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Holiday",
+          "item": [
+            {
+              "name": "Get Holiday from Calendarific",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/holiday/calendar?country=my&year=2024",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "holiday",
+                    "calendar"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "my"
+                    },
+                    {
+                      "key": "year",
+                      "value": "2024"
+                    }
+                  ]
+                },
+                "description": "Get holiday list from calendarific API"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Overtime",
+          "item": [
+            {
+              "name": "Assign Overtime to Employee",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"OVERTIME_ENTITLEMENT\": 10,\n    \"MONTH\": \"2024-06\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/overtime/entitlement",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "overtime",
+                    "entitlement"
+                  ]
+                },
+                "description": "Assign overtime entitlement to employee"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Month Year List",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/admin/overtime/month-year",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "overtime",
+                    "month-year"
+                  ]
+                },
+                "description": "Get month year list by employee"
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "eLeave Core API - Leave Management System (Port 3000)"
+    },
+    {
+      "name": "eLeave Tenant",
+      "item": [
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "Login Local",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eleave_tenant_url}}/api/auth/login/local",
+                  "host": [
+                    "{{eleave_tenant_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login",
+                    "local"
+                  ]
+                },
+                "description": "Login to eLeave Tenant with local database"
+              },
+              "response": []
+            },
+            {
+              "name": "Login AD",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eleave_tenant_url}}/api/auth/login/ad",
+                  "host": [
+                    "{{eleave_tenant_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login",
+                    "ad"
+                  ]
+                },
+                "description": "Login to eLeave Tenant with Active Directory"
+              },
+              "response": []
+            },
+            {
+              "name": "Forgot Password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"tenant@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{eleave_tenant_url}}/api/admin/forgot-password",
+                  "host": [
+                    "{{eleave_tenant_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "forgot-password"
+                  ]
+                },
+                "description": "Request password reset for eLeave Tenant"
+              },
+              "response": []
+            }
+          ],
+          "description": "eLeave Tenant Authentication endpoints",
+          "auth": {
+            "type": "noauth"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customer Management",
+          "item": [
+            {
+              "name": "Get All Customers",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-roles",
+                    "value": "superadmin,salesperson,support",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/customer",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "customer"
+                  ]
+                },
+                "description": "Get all customers (requires role: superadmin, salesperson, or support)"
+              },
+              "response": []
+            },
+            {
+              "name": "Sync WooCommerce Customers",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-roles",
+                    "value": "superadmin,salesperson,support",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/customer/woocommerce",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "customer",
+                    "woocommerce"
+                  ]
+                },
+                "description": "Sync customers from WooCommerce"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Subscription Management",
+          "item": [
+            {
+              "name": "Get All Subscriptions",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-roles",
+                    "value": "superadmin,salesperson,support",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/subscription",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subscription"
+                  ]
+                },
+                "description": "Get all subscriptions (requires role: superadmin, salesperson, or support)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Customer Details",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/subscription/:item/:subs_id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subscription",
+                    ":item",
+                    ":subs_id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "item",
+                      "value": "customer_info"
+                    },
+                    {
+                      "key": "subs_id",
+                      "value": "subscription-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get customer details by subscription ID (item: customer_info, company_info, customer_history, next_billing_date, usage)"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "User Management",
+          "item": [
+            {
+              "name": "Get All Users",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user-manage",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user-manage"
+                  ]
+                },
+                "description": "Get all users in tenant"
+              },
+              "response": []
+            },
+            {
+              "name": "Get User by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user-manage/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user-manage",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get user by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"LOGIN_ID\": \"newuser\",\n    \"EMAIL\": \"newuser@example.com\",\n    \"NAME\": \"New User\",\n    \"TENANT_GUID\": \"tenant-guid-here\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user-manage",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user-manage"
+                  ]
+                },
+                "description": "Create new user in tenant"
+              },
+              "response": []
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"EMAIL\": \"updated@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user-manage",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user-manage"
+                  ]
+                },
+                "description": "Update user information"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/user-manage/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "user-manage",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    }
+                  ]
+                },
+                "description": "Delete user"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Role Management",
+          "item": [
+            {
+              "name": "Get All Roles",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/role",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "role"
+                  ]
+                },
+                "description": "Get all roles"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Role by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/role/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "role",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "role-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get role by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Role",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"ROLE_NAME\": \"New Role\",\n    \"TENANT_GUID\": \"tenant-guid-here\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/role",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "role"
+                  ]
+                },
+                "description": "Create new role"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Role",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"ROLE_GUID\": \"role-guid-here\",\n    \"ROLE_NAME\": \"Updated Role\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/role",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "role"
+                  ]
+                },
+                "description": "Update role"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Role Management folder - test script",
+                  "const method = pm.request.method;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET roles returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('Roles response is array or object', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('Create role returns 201 or 200', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'PATCH') {",
+                  "    pm.test('Update role returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Dashboard Data",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/dashboard/:period",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "dashboard",
+                    ":period"
+                  ],
+                  "variable": [
+                    {
+                      "key": "period",
+                      "value": "month"
+                    }
+                  ]
+                },
+                "description": "Get dashboard data (period: all, week, month, quarter)"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Activity Log",
+          "item": [
+            {
+              "name": "Get All Activity Logs",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/activity-log",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "activity-log"
+                  ]
+                },
+                "description": "Get all activity logs"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Support",
+          "item": [
+            {
+              "name": "Get All Support Tickets",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/support",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "support"
+                  ]
+                },
+                "description": "Get all support tickets"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Sync Data",
+          "item": [
+            {
+              "name": "Sync Data",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/sync-data",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "sync-data"
+                  ]
+                },
+                "description": "Sync data from external sources"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Resync Subscription",
+          "item": [
+            {
+              "name": "Resync Subscription",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/resync-subscription",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "resync-subscription"
+                  ]
+                },
+                "description": "Resync subscription data"
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "eLeave Tenant API - Multi-tenant Management (Port 3001)"
+    },
+    {
+      "name": "beeWhere",
+      "item": [
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "Login",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{beewhere_url}}/api/auth/login",
+                  "host": [
+                    "{{beewhere_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Login to beeWhere system"
+              },
+              "response": []
+            }
+          ],
+          "description": "beeWhere Authentication endpoints",
+          "auth": {
+            "type": "noauth"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Clock Management",
+          "item": [
+            {
+              "name": "Get Latest Clock",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/clock/beewhere/latest",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clock",
+                    "beewhere",
+                    "latest"
+                  ]
+                },
+                "description": "Get beeWhere latest clock"
+              },
+              "response": []
+            },
+            {
+              "name": "Clock In",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"CLOCK_TIME\": \"2024-03-27 09:00:00\",\n    \"LOCATION\": \"Office\",\n    \"LATITUDE\": 3.1423,\n    \"LONGITUDE\": 101.6869\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/clock",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clock"
+                  ]
+                },
+                "description": "Clock in user"
+              },
+              "response": []
+            },
+            {
+              "name": "Clock Transaction",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"CLOCK_TIME\": \"2024-03-27 18:00:00\",\n    \"CLOCK_TYPE\": 1,\n    \"SOURCE_ID\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/clock/transaction",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clock",
+                    "transaction"
+                  ]
+                },
+                "description": "Clock transaction (clock out)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Clock History",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/clock/history?user_guid=user-guid-here&start_date=2024-03-01&end_date=2024-03-31",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clock",
+                    "history"
+                  ],
+                  "query": [
+                    {
+                      "key": "user_guid",
+                      "value": "user-guid-here"
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2024-03-01"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2024-03-31"
+                    }
+                  ]
+                },
+                "description": "Get clock history"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Clock Management folder - test script",
+                  "const method = pm.request.method;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET clock data returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('Clock response is an object or array', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('Clock transaction returns 200 or 201', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Overtime Management",
+          "item": [
+            {
+              "name": "Get Overtime Cycle",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/overtime/cycle",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "overtime",
+                    "cycle"
+                  ]
+                },
+                "description": "Get overtime cycle"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Overtime History",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"START_DATE\": \"2024-03-01\",\n    \"END_DATE\": \"2024-03-31\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/overtime/history",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "overtime",
+                    "history"
+                  ]
+                },
+                "description": "Get overtime history"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Client Management",
+          "item": [
+            {
+              "name": "Get All Clients",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/client/detail",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "client",
+                    "detail"
+                  ]
+                },
+                "description": "Get all clients (detail view)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Simple Clients",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/client/simple",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "client",
+                    "simple"
+                  ]
+                },
+                "description": "Get all clients (simple view)"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Client",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"CLIENT_NAME\": \"New Client\",\n    \"CLIENT_CODE\": \"NC001\",\n    \"CONTACT_PERSON\": \"John Doe\",\n    \"EMAIL\": \"john@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/client",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "client"
+                  ]
+                },
+                "description": "Create new client"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Client",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"CLIENT_GUID\": \"client-guid-here\",\n    \"CLIENT_NAME\": \"Updated Client Name\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/client",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "client"
+                  ]
+                },
+                "description": "Update client information"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Client",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/client/:clientId",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "client",
+                    ":clientId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "clientId",
+                      "value": "client-guid-here"
+                    }
+                  ]
+                },
+                "description": "Delete client"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Client by Coordinates",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/client/coordinate/:latitude/:longitude",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "client",
+                    "coordinate",
+                    ":latitude",
+                    ":longitude"
+                  ],
+                  "variable": [
+                    {
+                      "key": "latitude",
+                      "value": "3.1423"
+                    },
+                    {
+                      "key": "longitude",
+                      "value": "101.6869"
+                    }
+                  ]
+                },
+                "description": "Get client by GPS coordinates"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "User Info",
+          "item": [
+            {
+              "name": "Get User Profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/user-info",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "user-info"
+                  ]
+                },
+                "description": "Get user profile settings"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Login Log",
+          "item": [
+            {
+              "name": "Create Login Log",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"LOGIN_TIME\": \"2024-03-27 09:00:00\",\n    \"IP_ADDRESS\": \"192.168.1.1\",\n    \"USER_AGENT\": \"Mozilla/5.0\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/login-log",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "login-log"
+                  ]
+                },
+                "description": "Create login log entry"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Login Log",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/login-log/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "login-log",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get login log by user ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Login Log Activity",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"LOGIN_LOG_GUID\": \"login-log-guid-here\",\n    \"ACTIVITY\": \"Page View\",\n    \"TIMESTAMP\": \"2024-03-27 09:30:00\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/login-log",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "login-log"
+                  ]
+                },
+                "description": "Update login log activity"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Attendance Profile",
+          "item": [
+            {
+              "name": "Get All Attendance Profiles",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/attendance-profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "attendance-profile"
+                  ]
+                },
+                "description": "Get all attendance profiles"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Location Management",
+          "item": [
+            {
+              "name": "Get All Locations",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/location",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "location"
+                  ]
+                },
+                "description": "Get all locations"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Project Management",
+          "item": [
+            {
+              "name": "Get All Projects",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/project",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "project"
+                  ]
+                },
+                "description": "Get all projects"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Contract Management",
+          "item": [
+            {
+              "name": "Get All Contracts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/contract",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "contract"
+                  ]
+                },
+                "description": "Get all contracts"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Report",
+          "item": [
+            {
+              "name": "Get Report",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/report",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "report"
+                  ]
+                },
+                "description": "Get reports"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Map",
+          "item": [
+            {
+              "name": "Get Map Data",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/map",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "map"
+                  ]
+                },
+                "description": "Get map data"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Support",
+          "item": [
+            {
+              "name": "Get All Support Tickets",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/support",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "support"
+                  ]
+                },
+                "description": "Get all support tickets"
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "beeWhere API - Attendance & Workforce (Port 3002)"
+    },
+    {
+      "name": "eLeave Login",
+      "item": [
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "Login Local",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eleave_login_url}}/api/auth/login/local",
+                  "host": [
+                    "{{eleave_login_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login",
+                    "local"
+                  ]
+                },
+                "description": "Login with local database authentication"
+              },
+              "response": []
+            },
+            {
+              "name": "Login AD",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eleave_login_url}}/api/auth/login/ad",
+                  "host": [
+                    "{{eleave_login_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login",
+                    "ad"
+                  ]
+                },
+                "description": "Login with Active Directory authentication"
+              },
+              "response": []
+            },
+            {
+              "name": "Login Email",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eleave_login_url}}/api/auth/login/email",
+                  "host": [
+                    "{{eleave_login_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login",
+                    "email"
+                  ]
+                },
+                "description": "Login with email authentication"
+              },
+              "response": []
+            },
+            {
+              "name": "Login AD Extended",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                      "var password = pm.environment.get('password') || 'password';",
+                      "var encrypted_password = btoa(password);",
+                      "",
+                      "var body = {",
+                      "        \"email\": email_address,",
+                      "        \"password\": encrypted_password",
+                      "    };",
+                      "",
+                      "console.log(JSON.stringify(body));",
+                      "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{req_body}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eleave_login_url}}/api/auth/login/ad-extend",
+                  "host": [
+                    "{{eleave_login_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login",
+                    "ad-extend"
+                  ]
+                },
+                "description": "Login with extended Active Directory authentication"
+              },
+              "response": []
+            }
+          ],
+          "description": "eLeave Login Authentication endpoints",
+          "auth": {
+            "type": "noauth"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User Management",
+          "item": [
+            {
+              "name": "Get All Users",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/user",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "user"
+                  ]
+                },
+                "description": "Get all users (requires JWT)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get User by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/user/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "user",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    }
+                  ]
+                },
+                "description": "Get user by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"LOGIN_ID\": \"newuser\",\n    \"EMAIL\": \"newuser@example.com\",\n    \"NAME\": \"New User\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/user",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "user"
+                  ]
+                },
+                "description": "Create new user"
+              },
+              "response": []
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"EMAIL\": \"updated@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/user",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "user"
+                  ]
+                },
+                "description": "Update user information"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/user/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "user",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "user-guid-here"
+                    }
+                  ]
+                },
+                "description": "Delete user"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Encryption",
+          "item": [
+            {
+              "name": "Test Encrypt SHA256",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"test\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/test-encrypt-sha256",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "test-encrypt-sha256"
+                  ]
+                },
+                "description": "Test SHA256 encryption"
+              },
+              "response": []
+            },
+            {
+              "name": "Test Verify SHA256",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"test\",\n    \"encrypted\": \"{{sha256_encrypted}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/test-verify-sha256",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "test-verify-sha256"
+                  ]
+                },
+                "description": "Test SHA256 verification"
+              },
+              "response": []
+            },
+            {
+              "name": "Test Encrypt AES",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"test\",\n    \"key\": \"secret key 122\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/test-encrypt",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "test-encrypt"
+                  ]
+                },
+                "description": "Test AES encryption"
+              },
+              "response": []
+            },
+            {
+              "name": "Test Decrypt AES",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"encrypted\": \"{{aes_encrypted}}\",\n    \"key\": \"{{aes_key}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/test-decrypt",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "test-decrypt"
+                  ]
+                },
+                "description": "Test AES decryption"
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "eLeave Login API - Authentication Service (Port 3003)"
+    },
+    {
+      "name": "Beescheduler",
+      "item": [
+        {
+          "name": "Scheduler",
+          "item": [
+            {
+              "name": "Get Scheduler Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{beescheduler_url}}/api/scheduler/status",
+                  "host": [
+                    "{{beescheduler_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "scheduler",
+                    "status"
+                  ]
+                },
+                "description": "Get scheduler status"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Clock Reminder",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{beescheduler_url}}/api/scheduler/clock-reminder",
+                  "host": [
+                    "{{beescheduler_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "scheduler",
+                    "clock-reminder"
+                  ]
+                },
+                "description": "Get clock reminder settings"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Entitlement Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{beescheduler_url}}/api/scheduler/entitlement",
+                  "host": [
+                    "{{beescheduler_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "scheduler",
+                    "entitlement"
+                  ]
+                },
+                "description": "Get entitlement status"
+              },
+              "response": []
+            }
+          ],
+          "description": "Beescheduler Scheduler endpoints"
+        },
+        {
+          "name": "Health Check",
+          "item": [
+            {
+              "name": "Health Check",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{beescheduler_url}}/api/health",
+                  "host": [
+                    "{{beescheduler_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "health"
+                  ]
+                },
+                "description": "Health check endpoint"
+              },
+              "response": []
+            }
+          ],
+          "description": "Beescheduler Health Check endpoints",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Health Check folder - test script",
+                  "pm.test('Health check returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Health check response is JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "description": "Beescheduler API - Scheduling System (Port 3004)"
+    },
+    {
+      "name": "eLeave WooCommerce",
+      "item": [
+        {
+          "name": "Products",
+          "item": [
+            {
+              "name": "Get All Products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "products"
+                  ]
+                },
+                "description": "Get all WooCommerce products"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Product by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "product-id-here"
+                    }
+                  ]
+                },
+                "description": "Get product by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Product",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"New Product\",\n    \"type\": \"simple\",\n    \"regular_price\": \"19.99\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/products",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "products"
+                  ]
+                },
+                "description": "Create new product"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Product",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Updated Product Name\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/products/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "product-id-here"
+                    }
+                  ]
+                },
+                "description": "Update product"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Product",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "product-id-here"
+                    }
+                  ]
+                },
+                "description": "Delete product"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Products folder - test script",
+                  "const method = pm.request.method;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET products returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('Products response is array or object', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "    if (Array.isArray(pm.response.json())) {",
+                  "        pm.test('Each product has an id field', function () {",
+                  "            pm.response.json().forEach(function(product) {",
+                  "                pm.expect(product).to.have.property('id');",
+                  "            });",
+                  "        });",
+                  "    }",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('Create product returns 201 or 200', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "    pm.test('Created product has an id', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.have.property('id');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'PATCH') {",
+                  "    pm.test('Update product returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'DELETE') {",
+                  "    pm.test('Delete product returns 200 or 204', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Product Variations",
+          "item": [
+            {
+              "name": "Get All Product Variations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-variations",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-variations"
+                  ]
+                },
+                "description": "Get all product variations"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Product Variation by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-variations/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-variations",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "variation-id-here"
+                    }
+                  ]
+                },
+                "description": "Get product variation by ID"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Product Categories",
+          "item": [
+            {
+              "name": "Get All Product Categories",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-categories"
+                  ]
+                },
+                "description": "Get all product categories"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Product Category by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-categories/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-categories",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "category-id-here"
+                    }
+                  ]
+                },
+                "description": "Get product category by ID"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Product Tags",
+          "item": [
+            {
+              "name": "Get All Product Tags",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-tags",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-tags"
+                  ]
+                },
+                "description": "Get all product tags"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Product Attributes",
+          "item": [
+            {
+              "name": "Get All Product Attributes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-attributes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-attributes"
+                  ]
+                },
+                "description": "Get all product attributes"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Product Attribute by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-attributes/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-attributes",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "attribute-id-here"
+                    }
+                  ]
+                },
+                "description": "Get product attribute by ID"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Product Attribute Terms",
+          "item": [
+            {
+              "name": "Get All Attribute Terms",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-attribute-terms",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-attribute-terms"
+                  ]
+                },
+                "description": "Get all product attribute terms"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Product Shipping Classes",
+          "item": [
+            {
+              "name": "Get All Shipping Classes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-shipping-classes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-shipping-classes"
+                  ]
+                },
+                "description": "Get all product shipping classes"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Customers",
+          "item": [
+            {
+              "name": "Get All Customers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/customers",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "customers"
+                  ]
+                },
+                "description": "Get all WooCommerce customers"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Customer by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/customers/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "customers",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "customer-id-here"
+                    }
+                  ]
+                },
+                "description": "Get customer by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Customer",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"newcustomer@example.com\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/customers",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "customers"
+                  ]
+                },
+                "description": "Create new customer"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Customer",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"Updated Name\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/customers/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "customers",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "customer-id-here"
+                    }
+                  ]
+                },
+                "description": "Update customer"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Customers folder - test script",
+                  "const method = pm.request.method;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET customers returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('Customers response is array or object', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('Create customer returns 201 or 200', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'PATCH') {",
+                  "    pm.test('Update customer returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Orders",
+          "item": [
+            {
+              "name": "Get All Orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "orders"
+                  ]
+                },
+                "description": "Get all WooCommerce orders"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Order by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/orders/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "orders",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "order-id-here"
+                    }
+                  ]
+                },
+                "description": "Get order by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Order",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"customer_id\": 1,\n    \"line_items\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 2\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "orders"
+                  ]
+                },
+                "description": "Create new order"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Order",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"status\": \"completed\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/orders/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "orders",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "order-id-here"
+                    }
+                  ]
+                },
+                "description": "Update order status"
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Orders folder - test script",
+                  "const method = pm.request.method;",
+                  "",
+                  "if (method === 'GET') {",
+                  "    pm.test('GET orders returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "    pm.test('Orders response is array or object', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'POST') {",
+                  "    pm.test('Create order returns 201 or 200', function () {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    });",
+                  "    pm.test('Created order has an id', function () {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.have.property('id');",
+                  "    });",
+                  "}",
+                  "",
+                  "if (method === 'PATCH') {",
+                  "    pm.test('Update order returns 200', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Order Notes",
+          "item": [
+            {
+              "name": "Get All Order Notes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/order-notes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "order-notes"
+                  ]
+                },
+                "description": "Get all order notes"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Order Refunds",
+          "item": [
+            {
+              "name": "Get All Refunds",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/refunds",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "refunds"
+                  ]
+                },
+                "description": "Get all order refunds"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Coupons",
+          "item": [
+            {
+              "name": "Get All Coupons",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/coupons",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "coupons"
+                  ]
+                },
+                "description": "Get all WooCommerce coupons"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Coupon by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/coupons/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "coupons",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "coupon-id-here"
+                    }
+                  ]
+                },
+                "description": "Get coupon by ID"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Coupon",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"code\": \"DISCOUNT10\",\n    \"amount\": \"10\",\n    \"discount_type\": \"percent\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/coupons",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "coupons"
+                  ]
+                },
+                "description": "Create new coupon"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Tax Rates",
+          "item": [
+            {
+              "name": "Get All Tax Rates",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/tax-rates",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "tax-rates"
+                  ]
+                },
+                "description": "Get all tax rates"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Tax Classes",
+          "item": [
+            {
+              "name": "Get All Tax Classes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/tax-classes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "tax-classes"
+                  ]
+                },
+                "description": "Get all tax classes"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Shipping Zones",
+          "item": [
+            {
+              "name": "Get All Shipping Zones",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/shipping-zones",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shipping-zones"
+                  ]
+                },
+                "description": "Get all shipping zones"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Shipping Zone by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/shipping-zones/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shipping-zones",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "zone-id-here"
+                    }
+                  ]
+                },
+                "description": "Get shipping zone by ID"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Shipping Zone Locations",
+          "item": [
+            {
+              "name": "Get All Shipping Zone Locations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/shipping-zone-locations",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shipping-zone-locations"
+                  ]
+                },
+                "description": "Get all shipping zone locations"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Shipping Zone Methods",
+          "item": [
+            {
+              "name": "Get All Shipping Zone Methods",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/shipping-zone-methods",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shipping-zone-methods"
+                  ]
+                },
+                "description": "Get all shipping zone methods"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Shipping Methods",
+          "item": [
+            {
+              "name": "Get All Shipping Methods",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/shipping-methods",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shipping-methods"
+                  ]
+                },
+                "description": "Get all shipping methods"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Payment Gateways",
+          "item": [
+            {
+              "name": "Get All Payment Gateways",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/payment-gateways",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "payment-gateways"
+                  ]
+                },
+                "description": "Get all payment gateways"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Settings",
+          "item": [
+            {
+              "name": "Get All Settings",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/settings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "settings"
+                  ]
+                },
+                "description": "Get all WooCommerce settings"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Setting Options",
+          "item": [
+            {
+              "name": "Get All Setting Options",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/setting-options",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "setting-options"
+                  ]
+                },
+                "description": "Get all setting options"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "System Status",
+          "item": [
+            {
+              "name": "Get System Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/system-status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "system-status"
+                  ]
+                },
+                "description": "Get WooCommerce system status"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "System Status Tools",
+          "item": [
+            {
+              "name": "Get System Status Tools",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/system-status-tools",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "system-status-tools"
+                  ]
+                },
+                "description": "Get system status tools"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Data",
+          "item": [
+            {
+              "name": "Get Data",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/data",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "data"
+                  ]
+                },
+                "description": "Get WooCommerce data"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Reports",
+          "item": [
+            {
+              "name": "Get Reports",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/reports",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "reports"
+                  ]
+                },
+                "description": "Get WooCommerce reports"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Subscriptions",
+          "item": [
+            {
+              "name": "Get All Subscriptions",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/subscriptions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "subscriptions"
+                  ]
+                },
+                "description": "Get all subscriptions"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Subscription by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/subscriptions/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "subscriptions",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "subscription-id-here"
+                    }
+                  ]
+                },
+                "description": "Get subscription by ID"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Subscription Orders",
+          "item": [
+            {
+              "name": "Get All Subscription Orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/subscription-orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "subscription-orders"
+                  ]
+                },
+                "description": "Get all subscription orders"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Subscription Notes",
+          "item": [
+            {
+              "name": "Get All Subscription Notes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/subscription-notes",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "subscription-notes"
+                  ]
+                },
+                "description": "Get all subscription notes"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Product Reviews",
+          "item": [
+            {
+              "name": "Get All Product Reviews",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/product-reviews",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "product-reviews"
+                  ]
+                },
+                "description": "Get all product reviews"
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "eLeave WooCommerce API - WooCommerce Integration (Port 3005)"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "{{JWT}}",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "Authorization",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          "// Main collection pre-request script",
+          "// Set base URL from environment if not already set",
+          "if (!pm.environment.get('base_url')) {",
+          "    pm.environment.set('base_url', 'http://localhost:3000');",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// ===== beeSuite - All APIs: Collection-level Test Script =====",
+          "",
+          "// 1. Response time check",
+          "pm.test('Response time is acceptable (< 10s)', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+          "});",
+          "",
+          "// 2. Response has a valid status code (not 5xx server error)",
+          "pm.test('No server error (not 5xx)', function () {",
+          "    pm.expect(pm.response.code).to.be.below(500);",
+          "});",
+          "",
+          "// 3. Content-Type header is present",
+          "pm.test('Response has Content-Type header', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.exist;",
+          "});",
+          "",
+          "// 4. If response is JSON, it must be parseable",
+          "const contentType = pm.response.headers.get('Content-Type') || '';",
+          "if (contentType.includes('application/json')) {",
+          "    pm.test('Response body is valid JSON', function () {",
+          "        pm.response.to.be.json;",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "eleave_core_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "eleave_tenant_url",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "beewhere_url",
+      "value": "http://localhost:3002"
+    },
+    {
+      "key": "eleave_login_url",
+      "value": "http://localhost:3003"
+    },
+    {
+      "key": "beescheduler_url",
+      "value": "http://localhost:3004"
+    },
+    {
+      "key": "eleave_woocommerce_url",
+      "value": "http://localhost:3005"
+    },
+    {
+      "key": "req_body",
+      "value": ""
+    },
+    {
+      "key": "JWT",
+      "value": ""
+    }
+  ]
+}
