@@ -41,28 +41,63 @@
                 {
                   "listen": "test",
                   "script": {
-                    "type": "text/javascript",
                     "exec": [
-                      "// Login - eLeave Core",
-                      "pm.test('Login returns 201 Created', function () {",
+                      "pm.test(\"Authentication\", function() {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.response.to.have.status(201);",
+                      "    var JWT = \"JWT \" + jsonData.access_token;",
+                      "    pm.globals.set(\"JWT\", JWT);",
+                      "    pm.collectionVariables.set(\"JWT\", JWT);",
+                      "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                      "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                      "});",
+                      "",
+                      "pm.test(\"Status code is 201\", function () {",
                       "    pm.response.to.have.status(201);",
                       "});",
                       "",
-                      "pm.test('Response contains access_token', function () {",
-                      "    const jsonData = pm.response.json();",
-                      "    pm.expect(jsonData).to.have.property('access_token');",
-                      "    pm.expect(jsonData.access_token).to.be.a('string').and.not.empty;",
-                      "});",
+                      "// Decode JWT access_token and extract userId and tenantId",
+                      "try {",
+                      "    var jsonData = pm.response.json();",
+                      "    var accessToken = jsonData.access_token;",
+                      "    if (accessToken) {",
+                      "        var parts = accessToken.split(\".\");",
+                      "        if (parts.length === 3) {",
+                      "            // Base64url decode the payload (second part)",
+                      "            var base64Payload = parts[1].replace(/-/g, \"+\").replace(/_/g, \"/\");",
+                      "            var decodedPayload = JSON.parse(atob(base64Payload));",
+                      "            console.log(\"Decoded JWT payload:\", JSON.stringify(decodedPayload));",
                       "",
-                      "pm.test('Store JWT token for subsequent requests', function () {",
-                      "    const jsonData = pm.response.json();",
-                      "    const JWT = 'JWT ' + jsonData.access_token;",
-                      "    pm.globals.set('JWT', JWT);",
-                      "    pm.collectionVariables.set('JWT', JWT);",
-                      "    pm.environment.set('access_token', jsonData.access_token);",
-                      "    pm.expect(pm.globals.get('JWT')).to.include('JWT ');",
-                      "});"
-                    ]
+                      "            // Extract userId",
+                      "            var userId = decodedPayload.userId || decodedPayload.user_id || decodedPayload.sub || null;",
+                      "            if (userId !== null) {",
+                      "                pm.environment.set(\"userId\", userId);",
+                      "                console.log(\"userId saved to environment:\", userId);",
+                      "            } else {",
+                      "                console.warn(\"userId not found in JWT payload\");",
+                      "            }",
+                      "",
+                      "            // Extract tenantId",
+                      "            var tenantId = decodedPayload.tenantId || decodedPayload.tenant_id || decodedPayload.tenant || null;",
+                      "            if (tenantId !== null) {",
+                      "                pm.environment.set(\"tenantId\", tenantId);",
+                      "                console.log(\"tenantId saved to environment:\", tenantId);",
+                      "            } else {",
+                      "                console.warn(\"tenantId not found in JWT payload\");",
+                      "            }",
+                      "        } else {",
+                      "            console.warn(\"access_token does not appear to be a valid JWT\");",
+                      "        }",
+                      "    } else {",
+                      "        console.warn(\"access_token not found in response\");",
+                      "    }",
+                      "} catch (e) {",
+                      "    console.error(\"Failed to decode JWT:\", e.message);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
                   }
                 }
               ],
@@ -164,7 +199,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"user-guid-here\",\n    \"password\": \"new-password\"\n}"
+                  "raw": "{\n    \"id\": {{userId}},\n    \"password\": \"new-password\"\n}"
                 },
                 "url": {
                   "raw": "{{eleave_core_url}}/api/invitation",
@@ -1813,9 +1848,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/customer",
+                  "raw": "{{eleave_tenant_url}}/api/admin/customer",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -1844,9 +1879,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/customer/woocommerce",
+                  "raw": "{{eleave_tenant_url}}/api/admin/customer/woocommerce",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -1881,9 +1916,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/subscription",
+                  "raw": "{{eleave_tenant_url}}/api/admin/subscription",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -1907,9 +1942,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/subscription/:item/:subs_id",
+                  "raw": "{{eleave_tenant_url}}/api/admin/subscription/:item/:subs_id",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -1950,9 +1985,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/user-manage",
+                  "raw": "{{eleave_tenant_url}}/api/admin/user-manage",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -1972,13 +2007,14 @@
                   {
                     "key": "Authorization",
                     "value": "Bearer {{access_token}}",
-                    "type": "text"
+                    "type": "text",
+                    "disabled": true
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/user-manage/:id",
+                  "raw": "{{eleave_tenant_url}}/api/admin/user-manage/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2017,9 +2053,9 @@
                   "raw": "{\n    \"LOGIN_ID\": \"newuser\",\n    \"EMAIL\": \"newuser@example.com\",\n    \"NAME\": \"New User\",\n    \"TENANT_GUID\": \"tenant-guid-here\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/admin/user-manage",
+                  "raw": "{{eleave_tenant_url}}/api/admin/user-manage",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2051,9 +2087,9 @@
                   "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"EMAIL\": \"updated@example.com\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/admin/user-manage",
+                  "raw": "{{eleave_tenant_url}}/api/admin/user-manage",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2077,9 +2113,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/user-manage/:id",
+                  "raw": "{{eleave_tenant_url}}/api/admin/user-manage/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2115,9 +2151,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/role",
+                  "raw": "{{eleave_tenant_url}}/api/admin/role",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2141,9 +2177,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/role/:id",
+                  "raw": "{{eleave_tenant_url}}/api/admin/role/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2182,9 +2218,9 @@
                   "raw": "{\n    \"ROLE_NAME\": \"New Role\",\n    \"TENANT_GUID\": \"tenant-guid-here\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/admin/role",
+                  "raw": "{{eleave_tenant_url}}/api/admin/role",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2216,9 +2252,9 @@
                   "raw": "{\n    \"ROLE_GUID\": \"role-guid-here\",\n    \"ROLE_NAME\": \"Updated Role\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/admin/role",
+                  "raw": "{{eleave_tenant_url}}/api/admin/role",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2281,9 +2317,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/dashboard/:period",
+                  "raw": "{{eleave_tenant_url}}/api/admin/dashboard/:period",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2319,9 +2355,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/activity-log",
+                  "raw": "{{eleave_tenant_url}}/api/admin/activity-log",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2350,9 +2386,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/support",
+                  "raw": "{{eleave_tenant_url}}/api/admin/support",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2381,9 +2417,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/sync-data",
+                  "raw": "{{eleave_tenant_url}}/api/admin/sync-data",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2395,6 +2431,33 @@
               },
               "response": []
             }
+          ],
+          "auth": {
+            "type": "noauth"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            }
           ]
         },
         {
@@ -2403,6 +2466,9 @@
             {
               "name": "Resync Subscription",
               "request": {
+                "auth": {
+                  "type": "noauth"
+                },
                 "method": "POST",
                 "header": [
                   {
@@ -2412,9 +2478,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/resync-subscription",
+                  "raw": "{{eleave_tenant_url}}/api/admin/resync-subscription",
                   "host": [
-                    "{{base_url}}"
+                    "{{eleave_tenant_url}}"
                   ],
                   "path": [
                     "api",
@@ -2429,7 +2495,31 @@
           ]
         }
       ],
-      "description": "eLeave Tenant API - Multi-tenant Management (Port 3001)"
+      "description": "eLeave Tenant API - Multi-tenant Management (Port 3001)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "beeWhere",
@@ -2474,9 +2564,49 @@
                       "    pm.environment.set(\"access_token\", jsonData.access_token);",
                       "    console.log(pm.collectionVariables.get(\"JWT\"));",
                       "});",
+                      "",
                       "pm.test(\"Status code is 201\", function () {",
                       "    pm.response.to.have.status(201);",
-                      "});"
+                      "});",
+                      "",
+                      "// Decode JWT access_token and extract userId and tenantId",
+                      "try {",
+                      "    var jsonData = pm.response.json();",
+                      "    var accessToken = jsonData.access_token;",
+                      "    if (accessToken) {",
+                      "        var parts = accessToken.split(\".\");",
+                      "        if (parts.length === 3) {",
+                      "            // Base64url decode the payload (second part)",
+                      "            var base64Payload = parts[1].replace(/-/g, \"+\").replace(/_/g, \"/\");",
+                      "            var decodedPayload = JSON.parse(atob(base64Payload));",
+                      "            console.log(\"Decoded JWT payload:\", JSON.stringify(decodedPayload));",
+                      "",
+                      "            // Extract userId",
+                      "            var userId = decodedPayload.userId || decodedPayload.user_id || decodedPayload.sub || null;",
+                      "            if (userId !== null) {",
+                      "                pm.environment.set(\"userId\", userId);",
+                      "                console.log(\"userId saved to environment:\", userId);",
+                      "            } else {",
+                      "                console.warn(\"userId not found in JWT payload\");",
+                      "            }",
+                      "",
+                      "            // Extract tenantId",
+                      "            var tenantId = decodedPayload.tenantId || decodedPayload.tenant_id || decodedPayload.tenant || null;",
+                      "            if (tenantId !== null) {",
+                      "                pm.environment.set(\"tenantId\", tenantId);",
+                      "                console.log(\"tenantId saved to environment:\", tenantId);",
+                      "            } else {",
+                      "                console.warn(\"tenantId not found in JWT payload\");",
+                      "            }",
+                      "        } else {",
+                      "            console.warn(\"access_token does not appear to be a valid JWT\");",
+                      "        }",
+                      "    } else {",
+                      "        console.warn(\"access_token not found in response\");",
+                      "    }",
+                      "} catch (e) {",
+                      "    console.error(\"Failed to decode JWT:\", e.message);",
+                      "}"
                     ],
                     "type": "text/javascript",
                     "packages": {},
@@ -2502,9 +2632,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{beewhere_url}}/api/auth/login",
+                  "raw": "{{base_url}}/api/auth/login",
                   "host": [
-                    "{{beewhere_url}}"
+                    "{{base_url}}"
                   ],
                   "path": [
                     "api",
@@ -2561,9 +2691,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/clock/beewhere/latest",
+                  "raw": "{{beewhere_url}}/api/clock/beewhere/latest",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2596,9 +2726,9 @@
                   "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"CLOCK_TIME\": \"2024-03-27 09:00:00\",\n    \"LOCATION\": \"Office\",\n    \"LATITUDE\": 3.1423,\n    \"LONGITUDE\": 101.6869\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/clock",
+                  "raw": "{{beewhere_url}}/api/clock",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2629,9 +2759,9 @@
                   "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"CLOCK_TIME\": \"2024-03-27 18:00:00\",\n    \"CLOCK_TYPE\": 1,\n    \"SOURCE_ID\": 1\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/clock/transaction",
+                  "raw": "{{beewhere_url}}/api/clock/transaction",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2645,6 +2775,28 @@
             },
             {
               "name": "Get Clock History",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "var startDateString = pm.collectionVariables.get(\"startDate\") || '2026-03-01';",
+                      "var endDateString = pm.collectionVariables.get('endDate') || '2026-03-30';",
+                      "var unix_start = Math.floor(new Date(startDateString).getTime() / 1000) || Math.floor(Date.now() / 1000) - 86400; // 24 hours ago",
+                      "var unix_end = Math.floor(new Date(endDateString).getTime() / 1000) || Math.floor(Date.now() / 1000); // now",
+                      "",
+                      "// var unix_start = Math.floor(Date.now() / 1000) - 86400; // 24 hours ago",
+                      "// var unix_end = Math.floor(Date.now() / 1000); // now",
+                      "",
+                      "pm.variables.set('unix_start', unix_start);",
+                      "pm.variables.set('unix_end', unix_end);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "GET",
                 "header": [
@@ -2655,27 +2807,40 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/clock/history?user_guid=user-guid-here&start_date=2024-03-01&end_date=2024-03-31",
+                  "raw": "{{beewhere_url}}/api/clock/history/:type/:startdate/:enddate",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
                     "clock",
-                    "history"
+                    "history",
+                    ":type",
+                    ":startdate",
+                    ":enddate"
                   ],
                   "query": [
                     {
-                      "key": "user_guid",
-                      "value": "user-guid-here"
+                      "key": "userId",
+                      "value": "{{userId}}",
+                      "disabled": true
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "key": "type",
+                      "value": "attendance",
+                      "description": "Options: attendance | activity"
                     },
                     {
-                      "key": "start_date",
-                      "value": "2024-03-01"
+                      "key": "startdate",
+                      "value": "{{unix_start}}",
+                      "description": "Set via collection 'startDate' variable"
                     },
                     {
-                      "key": "end_date",
-                      "value": "2024-03-31"
+                      "key": "enddate",
+                      "value": "{{unix_end}}",
+                      "description": "Set via collection 'endDate' variable"
                     }
                   ]
                 },
@@ -2728,9 +2893,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/overtime/cycle",
+                  "raw": "{{beewhere_url}}/api/overtime/cycle",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2759,12 +2924,12 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"START_DATE\": \"2024-03-01\",\n    \"END_DATE\": \"2024-03-31\"\n}"
+                  "raw": "{\n    \"userid\": \"{{userId}}\",\n    \"startdate\": \"{{startDate}}\",\n    \"enddate\": \"{{endDate}}\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/overtime/history",
+                  "raw": "{{beewhere_url}}/api/overtime/history",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2793,9 +2958,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/client/detail",
+                  "raw": "{{beewhere_url}}/api/client/detail",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2819,9 +2984,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/client/simple",
+                  "raw": "{{beewhere_url}}/api/client/simple",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2850,12 +3015,12 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"CLIENT_NAME\": \"New Client\",\n    \"CLIENT_CODE\": \"NC001\",\n    \"CONTACT_PERSON\": \"John Doe\",\n    \"EMAIL\": \"john@example.com\"\n}"
+                  "raw": "{\n    \"CLIENT_NAME\": \"{{CLIENT_NAME}}\",\n    \"CLIENT_CODE\": \"{{CLIENT_CODE}}\",\n    \"CONTACT_PERSON\": \"{{CONTACT_PERSON}}\",\n    \"EMAIL\": \"{{CLIENT_EMAIL}}\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/client",
+                  "raw": "{{beewhere_url}}/api/client",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2886,9 +3051,9 @@
                   "raw": "{\n    \"CLIENT_GUID\": \"client-guid-here\",\n    \"CLIENT_NAME\": \"Updated Client Name\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/client",
+                  "raw": "{{beewhere_url}}/api/client",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2911,9 +3076,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/client/:clientId",
+                  "raw": "{{beewhere_url}}/api/client/:clientId",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2943,9 +3108,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/client/coordinate/:latitude/:longitude",
+                  "raw": "{{beewhere_url}}/api/client/coordinate/:latitude/:longitude",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -2986,9 +3151,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/user-info",
+                  "raw": "{{beewhere_url}}/api/user-info",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -3006,6 +3171,48 @@
           "item": [
             {
               "name": "Create Login Log",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// 1. Setup basic identifiers\r",
+                      "const userId = pm.variables.get(\"userId\") || crypto.randomUUID();\r",
+                      "const loggedTimestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds\r",
+                      "\r",
+                      "// 2. Get the User-Agent directly from the Postman request headers\r",
+                      "const deviceInfo = pm.request.headers.get(\"User-Agent\") || \"PostmanRuntime/7.x\";\r",
+                      "\r",
+                      "// 3. Fetch Network and Geo data\r",
+                      "pm.sendRequest(\"http://ip-api.com/json/\", (err, res) => {\r",
+                      "    if (err) {\r",
+                      "        console.error(\"Geo API failed:\", err);\r",
+                      "        return;\r",
+                      "    }\r",
+                      "    \r",
+                      "    const geo = res.json();\r",
+                      "\r",
+                      "    // 4. Construct the object exactly as requested\r",
+                      "    const requestBody = {\r",
+                      "        \"userId\": userId,\r",
+                      "        \"loggedTimestamp\": loggedTimestamp,\r",
+                      "        \"latitude\": geo.lat.toString(),\r",
+                      "        \"longitude\": geo.lon.toString(),\r",
+                      "        \"address\": `${geo.city}, ${geo.regionName}, ${geo.country}`,\r",
+                      "        \"deviceInfo\": deviceInfo,\r",
+                      "        \"devicePublicIp\": geo.query\r",
+                      "    };\r",
+                      "\r",
+                      "    // 5. Store the stringified JSON for the Body tab\r",
+                      "    pm.variables.set(\"dynamicBody\", JSON.stringify(requestBody));\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [
@@ -3021,12 +3228,12 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"USER_GUID\": \"user-guid-here\",\n    \"LOGIN_TIME\": \"2024-03-27 09:00:00\",\n    \"IP_ADDRESS\": \"192.168.1.1\",\n    \"USER_AGENT\": \"Mozilla/5.0\"\n}"
+                  "raw": "{{dynamicBody}}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/login-log",
+                  "raw": "{{beewhere_url}}/api/login-log",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -3049,9 +3256,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/login-log/:id",
+                  "raw": "{{beewhere_url}}/api/login-log/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -3061,7 +3268,7 @@
                   "variable": [
                     {
                       "key": "id",
-                      "value": "user-guid-here"
+                      "value": "{{userId}}"
                     }
                   ]
                 },
@@ -3077,7 +3284,8 @@
                   {
                     "key": "Authorization",
                     "value": "Bearer {{access_token}}",
-                    "type": "text"
+                    "type": "text",
+                    "disabled": true
                   },
                   {
                     "key": "Content-Type",
@@ -3119,13 +3327,14 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/attendance-profile",
+                  "raw": "{{beewhere_url}}/api/admin/attendance/attendance-profile",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
                     "admin",
+                    "attendance",
                     "attendance-profile"
                   ]
                 },
@@ -3150,9 +3359,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/admin/location",
+                  "raw": "{{beewhere_url}}/api/admin/location",
                   "host": [
-                    "{{base_url}}"
+                    "{{beewhere_url}}"
                   ],
                   "path": [
                     "api",
@@ -5416,6 +5625,7 @@
       "listen": "test",
       "script": {
         "type": "text/javascript",
+        "requests": {},
         "exec": [
           "// ===== beeSuite - All APIs: Collection-level Test Script =====",
           "",
@@ -5484,6 +5694,14 @@
     },
     {
       "key": "JWT",
+      "value": ""
+    },
+    {
+      "key": "startDate",
+      "value": ""
+    },
+    {
+      "key": "endDate",
       "value": ""
     }
   ]
