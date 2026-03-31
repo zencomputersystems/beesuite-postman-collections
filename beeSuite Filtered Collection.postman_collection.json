@@ -1,0 +1,3358 @@
+{
+    "info": {
+        "_postman_id": "beeSuite-updated-api-collection",
+        "name": "beeSuite Updated API Collection",
+        "description": "Comprehensive beeSuite API collection covering all services: eLeave Core, eLeave Tenant, beeWhere, eLeave Login, and eLeave WooCommerce",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exported_using": "GitHub Copilot"
+    },
+    "item": [
+        {
+            "name": "eLeave Core",
+            "item": [
+                {
+                    "name": "Authentication",
+                    "item": [
+                        {
+                            "name": "Login",
+                            "event": [
+                                {
+                                    "listen": "prerequest",
+                                    "script": {
+                                        "exec": [
+                                            "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                                            "var password = pm.environment.get('password') || 'password';",
+                                            "var encrypted_password = btoa(password);",
+                                            "",
+                                            "var body = {",
+                                            "        \"email\": email_address,",
+                                            "        \"password\": encrypted_password",
+                                            "    };",
+                                            "",
+                                            "console.log(JSON.stringify(body));",
+                                            "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                },
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Authentication\", function() {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    pm.response.to.have.status(201);",
+                                            "    var JWT = \"JWT \" + jsonData.access_token;",
+                                            "    pm.globals.set(\"JWT\", JWT);",
+                                            "    pm.collectionVariables.set(\"JWT\", JWT);",
+                                            "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                                            "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                                            "});",
+                                            "",
+                                            "pm.test(\"Status code is 201\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});",
+                                            "",
+                                            "// Decode JWT access_token and extract userId and tenantId",
+                                            "try {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    var accessToken = jsonData.access_token;",
+                                            "    if (accessToken) {",
+                                            "        var parts = accessToken.split(\".\");",
+                                            "        if (parts.length === 3) {",
+                                            "            // Base64url decode the payload (second part)",
+                                            "            var base64Payload = parts[1].replace(/-/g, \"+\").replace(/_/g, \"/\");",
+                                            "            var decodedPayload = JSON.parse(atob(base64Payload));",
+                                            "            console.log(\"Decoded JWT payload:\", JSON.stringify(decodedPayload));",
+                                            "",
+                                            "            // Extract userId",
+                                            "            var userId = decodedPayload.userId || decodedPayload.user_id || decodedPayload.sub || null;",
+                                            "            if (userId !== null) {",
+                                            "                pm.environment.set(\"userId\", userId);",
+                                            "                console.log(\"userId saved to environment:\", userId);",
+                                            "            } else {",
+                                            "                console.warn(\"userId not found in JWT payload\");",
+                                            "            }",
+                                            "",
+                                            "            // Extract tenantId",
+                                            "            var tenantId = decodedPayload.tenantId || decodedPayload.tenant_id || decodedPayload.tenant || null;",
+                                            "            if (tenantId !== null) {",
+                                            "                pm.environment.set(\"tenantId\", tenantId);",
+                                            "                console.log(\"tenantId saved to environment:\", tenantId);",
+                                            "            } else {",
+                                            "                console.warn(\"tenantId not found in JWT payload\");",
+                                            "            }",
+                                            "        } else {",
+                                            "            console.warn(\"access_token does not appear to be a valid JWT\");",
+                                            "        }",
+                                            "    } else {",
+                                            "        console.warn(\"access_token not found in response\");",
+                                            "    }",
+                                            "} catch (e) {",
+                                            "    console.error(\"Failed to decode JWT:\", e.message);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{{req_body}}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/auth/login",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "Login to eLeave Core system"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Login AD",
+                            "event": [
+                                {
+                                    "listen": "prerequest",
+                                    "script": {
+                                        "exec": [
+                                            "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                                            "var password = pm.environment.get('password') || 'password';",
+                                            "var encrypted_password = btoa(password);",
+                                            "",
+                                            "var body = {",
+                                            "        \"email\": email_address,",
+                                            "        \"password\": encrypted_password",
+                                            "    };",
+                                            "",
+                                            "console.log(JSON.stringify(body));",
+                                            "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                },
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Authentication\", function() {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    pm.response.to.have.status(201);",
+                                            "    var JWT = \"JWT \" + jsonData.access_token;",
+                                            "    pm.globals.set(\"JWT\", JWT);",
+                                            "    pm.collectionVariables.set(\"JWT\", JWT);",
+                                            "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                                            "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                                            "});",
+                                            "pm.test(\"Status code is 201\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{{req_body}}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/auth/login/ad",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "ad"
+                                    ]
+                                },
+                                "description": "Login to eLeave Core with Active Directory"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Change Password",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"id\": \"{{userId}}\",\n    \"password\": \"new-password\",\n    \"confirmPassword\": \"new-password\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/change-password/execute",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "change-password",
+                                        "execute"
+                                    ]
+                                },
+                                "description": "Execute password change"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update User Password",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"id\": \"{{userId}}\",\n    \"password\": \"new-password\",\n    \"confirmPassword\": \"new-password\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/invitation",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "invitation"
+                                    ]
+                                },
+                                "description": "Update user password for first time login"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Send Invitation",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"{{email_address}}\",\n    \"tenantId\": \"{{tenantId}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/invitation",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "invitation"
+                                    ]
+                                },
+                                "description": "Send invitation to user"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Import Users",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"users\": [\n        {\n            \"email\": \"user1@example.com\",\n            \"name\": \"User One\"\n        }\n    ]\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/userimport",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "userimport"
+                                    ]
+                                },
+                                "description": "Import users"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Import Users CSV",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "multipart/form-data"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/userimport/csv",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "userimport",
+                                        "csv"
+                                    ]
+                                },
+                                "description": "Import users from CSV list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Upload File to Azure",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/azure/upload",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "azure",
+                                        "upload"
+                                    ]
+                                },
+                                "description": "Upload file to Azure storage"
+                            },
+                            "response": []
+                        }
+                    ],
+                    "description": "eLeave Core Authentication endpoints",
+                    "auth": {
+                        "type": "noauth"
+                    },
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "// Authentication folder - test script",
+                                    "pm.test('Authentication endpoint responds with 2xx or 4xx', function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400, 401, 403, 404, 422]);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Staff Management",
+                    "item": [
+                        {
+                            "name": "Get Staff List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/staff-list",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "staff-list"
+                                    ]
+                                },
+                                "description": "Get Staff List By Permission"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Staff Directory",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/staff-list/directory",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "staff-list",
+                                        "directory"
+                                    ]
+                                },
+                                "description": "Get Staff Directory"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Leave Types",
+                    "item": [
+                        {
+                            "name": "Get All Leave Types",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/leavetype",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "leavetype"
+                                    ]
+                                },
+                                "description": "Find all Leave Types"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create Leave Type",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"CODE\": \"CL\",\n    \"NAME\": \"Casual Leave\",\n    \"TENANT_GUID\": \"{{tenantId}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/leavetype",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "leavetype"
+                                    ]
+                                },
+                                "description": "Create new Leave Type"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update Leave Type",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"NAME\": \"Updated Leave Type\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/leavetype",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "leavetype"
+                                    ]
+                                },
+                                "description": "Update Leave Type"
+                            },
+                            "response": []
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "// Leave Types folder - test script",
+                                    "const method = pm.request.method;",
+                                    "",
+                                    "if (method === 'GET') {",
+                                    "    pm.test('GET leave types returns 200', function () {",
+                                    "        pm.response.to.have.status(200);",
+                                    "    });",
+                                    "    pm.test('Leave types response is array or object', function () {",
+                                    "        const body = pm.response.json();",
+                                    "        pm.expect(body).to.satisfy(b => Array.isArray(b) || typeof b === 'object');",
+                                    "    });",
+                                    "}",
+                                    "",
+                                    "if (method === 'POST') {",
+                                    "    pm.test('Create leave type returns 201 or 200', function () {",
+                                    "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                                    "    });",
+                                    "}",
+                                    "",
+                                    "if (method === 'PATCH') {",
+                                    "    pm.test('Update leave type returns 200', function () {",
+                                    "        pm.response.to.have.status(200);",
+                                    "    });",
+                                    "}",
+                                    "",
+                                    "if (method === 'DELETE') {",
+                                    "    pm.test('Delete leave type returns 200 or 204', function () {",
+                                    "        pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                                    "    });",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Leave Entitlement",
+                    "item": [
+                        {
+                            "name": "Get All Leave Entitlements",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leavetype-entitlement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leavetype-entitlement"
+                                    ]
+                                },
+                                "description": "Get list of leave entitlement for this tenant"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create Leave Entitlement",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"USER_GUID\": \"{{userId}}\",\n    \"ENTITLEMENT\": 12,\n    \"EFFECTIVE_DATE\": \"2024-01-01\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leavetype-entitlement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leavetype-entitlement"
+                                    ]
+                                },
+                                "description": "Create leavetype entitlement"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update Leave Entitlement",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"ENTITLEMENT_GUID\": \"entitlement-guid-here\",\n    \"ENTITLEMENT\": 15\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leavetype-entitlement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leavetype-entitlement"
+                                    ]
+                                },
+                                "description": "Update Leavetype entitlement"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Active Leave Entitlements",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leavetype-entitlement/active/list",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leavetype-entitlement",
+                                        "active",
+                                        "list"
+                                    ]
+                                },
+                                "description": "Get All active leave type entitlement"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get User Entitlement Detail",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave-entitlement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave-entitlement"
+                                    ]
+                                },
+                                "description": "Get entitlement detail for this user"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Assign Leave Entitlement to User",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"USER_GUID\": \"{{userId}}\",\n    \"ENTITLEMENT\": 12\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave-entitlement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave-entitlement"
+                                    ]
+                                },
+                                "description": "Assign leave entitlement to user"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Assign Replacement Leave Entitlement",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"ENTITLEMENT\": 5\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave-entitlement/replacement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave-entitlement",
+                                        "replacement"
+                                    ]
+                                },
+                                "description": "Assign replacement leave entitlement to user"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Assign Entitlement Claim",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"ENTITLEMENT\": 3\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave-entitlement/entitlement-claim",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave-entitlement",
+                                        "entitlement-claim"
+                                    ]
+                                },
+                                "description": "Assign entitlement claim to user"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Leave Applications",
+                    "item": [
+                        {
+                            "name": "Get Staff List by Role",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave/apply-on-behalf/role/staffs",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave",
+                                        "apply-on-behalf",
+                                        "role",
+                                        "staffs"
+                                    ]
+                                },
+                                "description": "Get staff list based on apply on behalf role"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Apply Leave",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"START_DATE\": \"2024-06-01\",\n    \"END_DATE\": \"2024-06-05\",\n    \"REASON\": \"Annual leave\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave/apply",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave",
+                                        "apply"
+                                    ]
+                                },
+                                "description": "Apply for leave"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Apply Leave Alternative",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"START_DATE\": \"2024-06-01\",\n    \"END_DATE\": \"2024-06-05\",\n    \"REASON\": \"Annual leave\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave/applyleave",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave",
+                                        "applyleave"
+                                    ]
+                                },
+                                "description": "Apply for leave (alternative endpoint)"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Apply Leave on Behalf",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"START_DATE\": \"2024-06-01\",\n    \"END_DATE\": \"2024-06-05\",\n    \"REASON\": \"Annual leave\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/leave/apply-on-behalf",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "leave",
+                                        "apply-on-behalf"
+                                    ]
+                                },
+                                "description": "Apply leave on behalf by bundle"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Company Management",
+                    "item": [
+                        {
+                            "name": "Get All Companies",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/company",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "company"
+                                    ]
+                                },
+                                "description": "Get company list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update Company",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"COMPANY_GUID\": \"company-guid-here\",\n    \"COMPANY_NAME\": \"Updated Company Name\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/company",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "company"
+                                    ]
+                                },
+                                "description": "Update company"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Companies with Year End",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/company/year-end",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "company",
+                                        "year-end"
+                                    ]
+                                },
+                                "description": "Get company list with year end verification"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Reports",
+                    "item": [
+                        {
+                            "name": "Get Report (POST)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"reportType\": \"leave-taken\",\n    \"startDate\": \"2024-01-01\",\n    \"endDate\": \"2024-12-31\",\n    \"userId\": \"{{userId}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/report",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "report"
+                                    ]
+                                },
+                                "description": "Get report using POST method"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Holiday",
+                    "item": [
+                        {
+                            "name": "Get Holiday from Calendarific",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/holiday/calendar?country=my&year=2024",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "holiday",
+                                        "calendar"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "country",
+                                            "value": "my"
+                                        },
+                                        {
+                                            "key": "year",
+                                            "value": "2024"
+                                        }
+                                    ]
+                                },
+                                "description": "Get holiday list from calendarific API"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Calendar Profile List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/holiday/calendar-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "holiday",
+                                        "calendar-profile"
+                                    ]
+                                },
+                                "description": "Get calendar profile list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Edit Calendar Profile",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"CALENDAR_PROFILE_GUID\": \"calendar-profile-guid-here\",\n    \"CALENDAR_NAME\": \"Updated Calendar\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/holiday/calendar-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "holiday",
+                                        "calendar-profile"
+                                    ]
+                                },
+                                "description": "Edit calendar profile"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Setup Calendar Profile",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"CALENDAR_NAME\": \"New Calendar\",\n    \"COUNTRY_CODE\": \"MY\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/holiday/calendar-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "holiday",
+                                        "calendar-profile"
+                                    ]
+                                },
+                                "description": "Setup new calendar profile"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Current Year Calendar Profile",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/holiday/calendar-profile/current-year",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "holiday",
+                                        "calendar-profile",
+                                        "current-year"
+                                    ]
+                                },
+                                "description": "Get current year calendar profile list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Assign Calendar Profile to Employee",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"CALENDAR_PROFILE_GUID\": \"calendar-profile-guid-here\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/holiday/calendar-profile/user-calendar",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "holiday",
+                                        "calendar-profile",
+                                        "user-calendar"
+                                    ]
+                                },
+                                "description": "Assign calendar profile to employee"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Leave Adjustment",
+                    "item": [
+                        {
+                            "name": "Update Leave Adjustment",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"LEAVETYPE_GUID\": \"leavetype-guid-here\",\n    \"ADJUSTMENT\": 5\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/leave-adjustment",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "leave-adjustment"
+                                    ]
+                                },
+                                "description": "Update Leave Adjustment"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "General Leave Policy",
+                    "item": [
+                        {
+                            "name": "Get General Leave Policy",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/general-leave-policy",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "general-leave-policy"
+                                    ]
+                                },
+                                "description": "Get general leave policy"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create General Leave Policy",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"COMPANY_GUID\": \"company-guid-here\",\n    \"POLICY_NAME\": \"Standard Leave Policy\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/general-leave-policy",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "general-leave-policy"
+                                    ]
+                                },
+                                "description": "Create general leave policy"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update General Leave Policy",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"GENERAL_LEAVE_POLICY_GUID\": \"general-leave-policy-guid-here\",\n    \"POLICY_NAME\": \"Updated Leave Policy\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/general-leave-policy",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "general-leave-policy"
+                                    ]
+                                },
+                                "description": "Update general leave policy"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Profile Default",
+                    "item": [
+                        {
+                            "name": "Find Default Profile",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/profile-default",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "profile-default"
+                                    ]
+                                },
+                                "description": "Find default profile"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Working Hour",
+                    "item": [
+                        {
+                            "name": "Get Working Hours Profile List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/working-hours/working-hours-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "working-hours",
+                                        "working-hours-profile"
+                                    ]
+                                },
+                                "description": "Get working hours profile list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Setup New Working Hours",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"WORKING_HOURS_NAME\": \"Standard Working Hours\",\n    \"TENANT_GUID\": \"{{tenantId}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/working-hours/working-hours-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "working-hours",
+                                        "working-hours-profile"
+                                    ]
+                                },
+                                "description": "Setup new working hours"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Edit Working Hours Profile",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"WORKING_HOURS_PROFILE_GUID\": \"working-hours-guid-here\",\n    \"WORKING_HOURS_NAME\": \"Updated Working Hours\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/working-hours/working-hours-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "working-hours",
+                                        "working-hours-profile"
+                                    ]
+                                },
+                                "description": "Edit working hours profile"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Assign Working Hours to Employee",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"WORKING_HOURS_PROFILE_GUID\": \"working-hours-guid-here\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/working-hours/user-working-hours",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "working-hours",
+                                        "user-working-hours"
+                                    ]
+                                },
+                                "description": "Assign working hours profile to employee"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Role",
+                    "item": [
+                        {
+                            "name": "Get Role Profile List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/role/role-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "role",
+                                        "role-profile"
+                                    ]
+                                },
+                                "description": "Get role profile list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Setup New Role",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"ROLE_NAME\": \"New Role\",\n    \"TENANT_GUID\": \"{{tenantId}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/role/role-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "role",
+                                        "role-profile"
+                                    ]
+                                },
+                                "description": "Setup new role"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Edit Role Profile",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"ROLE_PROFILE_GUID\": \"role-profile-guid-here\",\n    \"ROLE_NAME\": \"Updated Role\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/role/role-profile",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "role",
+                                        "role-profile"
+                                    ]
+                                },
+                                "description": "Edit role profile"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Assign Role to Employee",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"ROLE_PROFILE_GUID\": \"role-profile-guid-here\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/role/user-role",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "role",
+                                        "user-role"
+                                    ]
+                                },
+                                "description": "Assign role profile to employee"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Approval Override",
+                    "item": [
+                        {
+                            "name": "Get Pending Leave",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/approval-override",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "approval-override"
+                                    ]
+                                },
+                                "description": "Get pending leave"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update Approval Status",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"LEAVE_GUID\": \"leave-guid-here\",\n    \"STATUS\": \"approved\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/approval-override",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "approval-override"
+                                    ]
+                                },
+                                "description": "Update approval status"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Approval Override List by Role",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/approval-override/role/list",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "approval-override",
+                                        "role",
+                                        "list"
+                                    ]
+                                },
+                                "description": "Get approval override list by role"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Announcement",
+                    "item": [
+                        {
+                            "name": "Get Announcement List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/announcement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "announcement"
+                                    ]
+                                },
+                                "description": "Get announcement list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update Announcement",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"ANNOUNCEMENT_GUID\": \"announcement-guid-here\",\n    \"TITLE\": \"Updated Announcement\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/announcement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "announcement"
+                                    ]
+                                },
+                                "description": "Update announcement data"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create Announcement",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"TITLE\": \"New Announcement\",\n    \"CONTENT\": \"Announcement content\",\n    \"TENANT_GUID\": \"{{tenantId}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_core_url}}/api/admin/announcement",
+                                    "host": [
+                                        "{{eleave_core_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "announcement"
+                                    ]
+                                },
+                                "description": "Create new announcement"
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ],
+            "description": "eLeave Core API - Leave Management System"
+        },
+        {
+            "name": "eLeave Tenant",
+            "item": [
+                {
+                    "name": "Authentication",
+                    "item": [
+                        {
+                            "name": "Login AD",
+                            "event": [
+                                {
+                                    "listen": "prerequest",
+                                    "script": {
+                                        "exec": [
+                                            "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                                            "var password = pm.environment.get('password') || 'password';",
+                                            "var encrypted_password = btoa(password);",
+                                            "",
+                                            "var body = {",
+                                            "        \"email\": email_address,",
+                                            "        \"password\": encrypted_password",
+                                            "    };",
+                                            "",
+                                            "console.log(JSON.stringify(body));",
+                                            "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                },
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Authentication\", function() {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    pm.response.to.have.status(201);",
+                                            "    var JWT = \"JWT \" + jsonData.access_token;",
+                                            "    pm.globals.set(\"JWT\", JWT);",
+                                            "    pm.collectionVariables.set(\"JWT\", JWT);",
+                                            "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                                            "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                                            "});",
+                                            "pm.test(\"Status code is 201\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{{req_body}}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/auth/login/ad",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "ad"
+                                    ]
+                                },
+                                "description": "Login to eLeave Tenant with Active Directory"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Forgot Password",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"{{email_address}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/forgot-password",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "forgot-password"
+                                    ]
+                                },
+                                "description": "Forgot password"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Send Email Forgot Password",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"{{email_address}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/forgot-password",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "forgot-password"
+                                    ]
+                                },
+                                "description": "Send email forgot password"
+                            },
+                            "response": []
+                        }
+                    ],
+                    "description": "eLeave Tenant Authentication endpoints",
+                    "auth": {
+                        "type": "noauth"
+                    },
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Customer Management",
+                    "item": [
+                        {
+                            "name": "Get All Customers",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "x-roles",
+                                        "value": "superadmin,salesperson,support",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/customer",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "customer"
+                                    ]
+                                },
+                                "description": "Get all user (requires role: superadmin, salesperson, or support)"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Sign up new customer",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "x-roles",
+                                        "value": "superadmin,salesperson,support",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"{{email_address}}\",\n    \"name\": \"New Customer\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/customer",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "customer"
+                                    ]
+                                },
+                                "description": "Sign up new customer"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update user",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "x-roles",
+                                        "value": "superadmin,salesperson,support",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"customer_id\": \"customer-guid-here\",\n    \"email\": \"{{email_address}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/customer",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "customer"
+                                    ]
+                                },
+                                "description": "Update user"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Sync woocommerce customer",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "x-roles",
+                                        "value": "superadmin,salesperson,support",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/customer/woocommerce",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "customer",
+                                        "woocommerce"
+                                    ]
+                                },
+                                "description": "Sync woocommerce customer"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Subscription Management",
+                    "item": [
+                        {
+                            "name": "Get all subscription",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "x-roles",
+                                        "value": "superadmin,salesperson,support",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/subscription",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "subscription"
+                                    ]
+                                },
+                                "description": "Get all subscription (requires role: superadmin, salesperson, or support)"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create subscription",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "x-roles",
+                                        "value": "superadmin,salesperson,support",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"customer_id\": \"customer-guid-here\",\n    \"plan_id\": \"plan-guid-here\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/subscription",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "subscription"
+                                    ]
+                                },
+                                "description": "Create subscription"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update subscription",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "x-roles",
+                                        "value": "superadmin,salesperson,support",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"subscription_id\": \"subscription-guid-here\",\n    \"plan_id\": \"new-plan-guid-here\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/subscription",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "subscription"
+                                    ]
+                                },
+                                "description": "Update subscription"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create activity log",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"subscription_id\": \"subscription-guid-here\",\n    \"action\": \"created\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/activity-log",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "activity-log"
+                                    ]
+                                },
+                                "description": "Create activity log"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "User Management",
+                    "item": [
+                        {
+                            "name": "Sign up new user",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"{{email_address}}\",\n    \"name\": \"New User\",\n    \"tenant_id\": \"{{tenantId}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/user-manage/sign-up",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "user-manage",
+                                        "sign-up"
+                                    ]
+                                },
+                                "description": "Sign up new user"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update user details",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"user_id\": \"{{userId}}\",\n    \"email\": \"{{email_address}}\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/user-manage/user-main",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "user-manage",
+                                        "user-main"
+                                    ]
+                                },
+                                "description": "Update user details"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get user personal detail",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/user-manage/personal-detail",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "user-manage",
+                                        "personal-detail"
+                                    ]
+                                },
+                                "description": "Get user personal detail"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Sync Data",
+                    "item": [
+                        {
+                            "name": "Test sync",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/sync-data/testsync",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "sync-data",
+                                        "testsync"
+                                    ]
+                                },
+                                "description": "Test sync"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Test sync subscription",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/sync-data/testsyncsubscription",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "sync-data",
+                                        "testsyncsubscription"
+                                    ]
+                                },
+                                "description": "Test sync"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Sync created subscription",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/sync-data/sync-subscription-create",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "sync-data",
+                                        "sync-subscription-create"
+                                    ]
+                                },
+                                "description": "Sync created subscription"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Sync updateded subscription",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_tenant_url}}/api/admin/sync-data/sync-subscription-update",
+                                    "host": [
+                                        "{{eleave_tenant_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "sync-data",
+                                        "sync-subscription-update"
+                                    ]
+                                },
+                                "description": "Sync updateded subscription"
+                            },
+                            "response": []
+                        }
+                    ],
+                    "auth": {
+                        "type": "noauth"
+                    },
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ],
+            "description": "eLeave Tenant API - Multi-tenant Management"
+        },
+        {
+            "name": "beeWhere",
+            "item": [
+                {
+                    "name": "Authentication",
+                    "item": [
+                        {
+                            "name": "Login",
+                            "event": [
+                                {
+                                    "listen": "prerequest",
+                                    "script": {
+                                        "exec": [
+                                            "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                                            "var password = pm.environment.get('password') || 'password';",
+                                            "var encrypted_password = btoa(password);",
+                                            "",
+                                            "var body = {",
+                                            "        \"email\": email_address,",
+                                            "        \"password\": encrypted_password",
+                                            "    };",
+                                            "",
+                                            "console.log(JSON.stringify(body));",
+                                            "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                },
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Authentication\", function() {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    pm.response.to.have.status(201);",
+                                            "    var JWT = \"JWT \" + jsonData.access_token;",
+                                            "    pm.globals.set(\"JWT\", JWT);",
+                                            "    pm.collectionVariables.set(\"JWT\", JWT);",
+                                            "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                                            "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                                            "});",
+                                            "",
+                                            "pm.test(\"Status code is 201\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});",
+                                            "",
+                                            "// Decode JWT access_token and extract userId and tenantId",
+                                            "try {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    var accessToken = jsonData.access_token;",
+                                            "    if (accessToken) {",
+                                            "        var parts = accessToken.split(\".\");",
+                                            "        if (parts.length === 3) {",
+                                            "            // Base64url decode the payload (second part)",
+                                            "            var base64Payload = parts[1].replace(/-/g, \"+\").replace(/_/g, \"/\");",
+                                            "            var decodedPayload = JSON.parse(atob(base64Payload));",
+                                            "            console.log(\"Decoded JWT payload:\", JSON.stringify(decodedPayload));",
+                                            "",
+                                            "            // Extract userId",
+                                            "            var userId = decodedPayload.userId || decodedPayload.user_id || decodedPayload.sub || null;",
+                                            "            if (userId !== null) {",
+                                            "                pm.environment.set(\"userId\", userId);",
+                                            "                console.log(\"userId saved to environment:\", userId);",
+                                            "            } else {",
+                                            "                console.warn(\"userId not found in JWT payload\");",
+                                            "            }",
+                                            "",
+                                            "            // Extract tenantId",
+                                            "            var tenantId = decodedPayload.tenantId || decodedPayload.tenant_id || decodedPayload.tenant || null;",
+                                            "            if (tenantId !== null) {",
+                                            "                pm.environment.set(\"tenantId\", tenantId);",
+                                            "                console.log(\"tenantId saved to environment:\", tenantId);",
+                                            "            } else {",
+                                            "                console.warn(\"tenantId not found in JWT payload\");",
+                                            "            }",
+                                            "        } else {",
+                                            "            console.warn(\"access_token does not appear to be a valid JWT\");",
+                                            "        }",
+                                            "    } else {",
+                                            "        console.warn(\"access_token not found in response\");",
+                                            "    }",
+                                            "} catch (e) {",
+                                            "    console.error(\"Failed to decode JWT:\", e.message);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{{req_body}}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{beewhere_url}}/api/auth/login",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "Login to beeWhere system"
+                            },
+                            "response": []
+                        }
+                    ],
+                    "description": "beeWhere Authentication endpoints",
+                    "auth": {
+                        "type": "noauth"
+                    },
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Report",
+                    "item": [
+                        {
+                            "name": "Attendance report",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"USER_GUID\": \"{{userId}}\",\n    \"START_DATE\": \"2024-01-01\",\n    \"END_DATE\": \"2024-12-31\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{beewhere_url}}/report/attendance",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "report",
+                                        "attendance"
+                                    ]
+                                },
+                                "description": "Attendance report"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Support",
+                    "item": [
+                        {
+                            "name": "Create support issue",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"subject\": \"Support Issue\",\n    \"description\": \"Issue description\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{beewhere_url}}/support",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "support"
+                                    ]
+                                },
+                                "description": "Create support issue"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get request list",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{beewhere_url}}/support/request",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "support",
+                                        "request"
+                                    ]
+                                },
+                                "description": "Get request list"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get support list by date",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{beewhere_url}}/support/list",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "support",
+                                        "list"
+                                    ]
+                                },
+                                "description": "Get support list by date"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get support list by employee",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{beewhere_url}}/support/employee",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "support",
+                                        "employee"
+                                    ]
+                                },
+                                "description": "Get support list by employee"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Reply for clarification",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"support_id\": \"support-guid-here\",\n    \"message\": \"Response message\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{beewhere_url}}/support/clarification",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "support",
+                                        "clarification"
+                                    ]
+                                },
+                                "description": "Reply for clarification"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Admin reply for clarification",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"support_id\": \"support-guid-here\",\n    \"message\": \"Admin response\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{beewhere_url}}/support/admin/clarification",
+                                    "host": [
+                                        "{{beewhere_url}}"
+                                    ],
+                                    "path": [
+                                        "support",
+                                        "admin",
+                                        "clarification"
+                                    ]
+                                },
+                                "description": "Admin reply for clarification"
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ],
+            "description": "beeWhere API - Attendance & Workforce"
+        },
+        {
+            "name": "eLeave Login",
+            "item": [
+                {
+                    "name": "Authentication",
+                    "item": [
+                        {
+                            "name": "Login AD",
+                            "event": [
+                                {
+                                    "listen": "prerequest",
+                                    "script": {
+                                        "exec": [
+                                            "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                                            "var password = pm.environment.get('password') || 'password';",
+                                            "var encrypted_password = btoa(password);",
+                                            "",
+                                            "var body = {",
+                                            "        \"email\": email_address,",
+                                            "        \"password\": encrypted_password",
+                                            "    };",
+                                            "",
+                                            "console.log(JSON.stringify(body));",
+                                            "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                },
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Authentication\", function() {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    pm.response.to.have.status(201);",
+                                            "    var JWT = \"JWT \" + jsonData.access_token;",
+                                            "    pm.globals.set(\"JWT\", JWT);",
+                                            "    pm.collectionVariables.set(\"JWT\", JWT);",
+                                            "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                                            "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                                            "});",
+                                            "pm.test(\"Status code is 201\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{{req_body}}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{eleave_login_url}}/api/auth/login/ad",
+                                    "host": [
+                                        "{{eleave_login_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "ad"
+                                    ]
+                                },
+                                "description": "Login with Active Directory authentication"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Login Email",
+                            "event": [
+                                {
+                                    "listen": "prerequest",
+                                    "script": {
+                                        "exec": [
+                                            "const email_address = pm.environment.get('email_address') || 'test@example.com';",
+                                            "var password = pm.environment.get('password') || 'password';",
+                                            "var encrypted_password = btoa(password);",
+                                            "",
+                                            "var body = {",
+                                            "        \"email\": email_address,",
+                                            "        \"password\": encrypted_password",
+                                            "    };",
+                                            "",
+                                            "console.log(JSON.stringify(body));",
+                                            "pm.collectionVariables.set('req_body', JSON.stringify(body));"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                },
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Authentication\", function() {",
+                                            "    var jsonData = pm.response.json();",
+                                            "    pm.response.to.have.status(201);",
+                                            "    var JWT = \"JWT \" + jsonData.access_token;",
+                                            "    pm.globals.set(\"JWT\", JWT);",
+                                            "    pm.collectionVariables.set(\"JWT\", JWT);",
+                                            "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                                            "    console.log(pm.collectionVariables.get(\"JWT\"));",
+                                            "});",
+                                            "pm.test(\"Status code is 201\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript",
+                                        "packages": {},
+                                        "requests": {}
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{{req_body}}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{eleave_login_url}}/api/auth/login/email",
+                                    "host": [
+                                        "{{eleave_login_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login",
+                                        "email"
+                                    ]
+                                },
+                                "description": "Login with email authentication"
+                            },
+                            "response": []
+                        }
+                    ],
+                    "description": "eLeave Login Authentication endpoints",
+                    "auth": {
+                        "type": "noauth"
+                    },
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ],
+            "description": "eLeave Login API - Authentication Service"
+        },
+        {
+            "name": "Beescheduler",
+            "item": [],
+            "description": "Beescheduler API - Scheduling System"
+        },
+        {
+            "name": "eLeave WooCommerce",
+            "item": [
+                {
+                    "name": "Authentication",
+                    "item": [
+                        {
+                            "name": "Get API Status",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{eleave_woocommerce_url}}/",
+                                    "host": [
+                                        "{{eleave_woocommerce_url}}"
+                                    ],
+                                    "path": [
+                                        ""
+                                    ]
+                                },
+                                "description": "Get API status"
+                            },
+                            "response": []
+                        }
+                    ],
+                    "description": "eLeave WooCommerce Authentication endpoints",
+                    "auth": {
+                        "type": "noauth"
+                    },
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "packages": {},
+                                "requests": {},
+                                "exec": [
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ],
+            "description": "eLeave WooCommerce API - E-commerce Platform"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ]
+}

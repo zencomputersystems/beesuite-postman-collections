@@ -12,17 +12,21 @@ beesuite-postman-collections/
 ├── README.md                              # Main documentation
 ├── QUICKSTART.md                          # This file
 ├── API_SUMMARY.md                         # API summary
-└── beeSuite_consolidated_API_collection.json  # Main consolidated collection
+├── beeSuite Updated API Collection.postman_collection.json  # Original collection
+├── beeSuite Filtered Collection.postman_collection.json     # Filtered collection (API-matched)
+└── filter-collection.js                   # Collection filtering script
 ```
 
 ## Installation
 
-### Using the Consolidated Collection
+### Using the Filtered Collection (Recommended)
+
+The filtered collection contains only endpoints that match the official API documentation.
 
 1. **Import the Collection**
    - Open Postman
    - Click "Import" button
-   - Select `beeSuite_consolidated_API_collection.json`
+   - Select `beeSuite Filtered Collection.postman_collection.json`
 
 2. **Configure Environment Variables**
    - Create a new Postman environment or update existing one
@@ -34,6 +38,21 @@ beesuite-postman-collections/
      - `eleave_login_url`: http://localhost:3003
      - `beescheduler_url`: http://localhost:3004
      - `eleave_woocommerce_url`: http://localhost:3005
+
+3. **Select the Environment**
+   - In Postman, select your configured environment from the environment dropdown
+
+### Using the Original Collection
+
+The original collection contains all endpoints including those not in the official API docs.
+
+1. **Import the Collection**
+   - Open Postman
+   - Click "Import" button
+   - Select `beeSuite Updated API Collection.postman_collection.json`
+
+2. **Configure Environment Variables**
+   - Same as above
 
 3. **Select the Environment**
    - In Postman, select your configured environment from the environment dropdown

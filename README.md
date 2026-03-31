@@ -9,7 +9,9 @@ beesuite-postman-collections/
 ├── README.md                              # This file
 ├── QUICKSTART.md                          # Quick start guide
 ├── API_SUMMARY.md                         # API summary documentation
-└── beeSuite_consolidated_API_collection.json  # Main consolidated collection
+├── beeSuite Updated API Collection.postman_collection.json  # Original collection
+├── beeSuite Filtered Collection.postman_collection.json     # Filtered collection (API-matched)
+└── filter-collection.js                   # Collection filtering script
 ```
 
 ## Overview
@@ -18,32 +20,58 @@ The beeSuite project consists of multiple backend services, each with its own AP
 
 ## Available Collections
 
-### Consolidated Collection
+### Original Collection
 
-A single unified collection containing all API endpoints from all services:
+Contains all API endpoints from all services:
 
 | File | Description |
 |------|-------------|
-| `beeSuite_consolidated_API_collection.json` | Single collection with all endpoints from all services |
+| `beeSuite Updated API Collection.postman_collection.json` | Original collection with all endpoints |
 
-**Total Endpoints:** 149 requests across 6 services
+**Total Endpoints:** 354 requests across 6 services
+
+### Filtered Collection
+
+Contains only API endpoints that match the official API documentation:
+
+| File | Description |
+|------|-------------|
+| `beeSuite Filtered Collection.postman_collection.json` | Filtered collection matching API docs |
+
+**Total Endpoints:** 83 requests across 6 services
+
+**Note:** The filtered collection removes requests not found in the official API documentation and adds missing endpoints from the API docs.
+
+## Available Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| eLeave Core | 3000 | Main leave management system |
+| eLeave Tenant | 3001 | Multi-tenant administration |
+| beeWhere | 3002 | Attendance and workforce management |
+| eLeave Login | 3003 | Authentication service |
+| Beescheduler | 3004 | Scheduling system |
+| eLeave WooCommerce | 3005 | E-commerce platform |
 
 See the [Quick Start Guide](QUICKSTART.md) for usage instructions.
 
-For a unified collection with all endpoints:
-
-| File | Description |
-|------|-------------|
-| `beeSuite_consolidated_API_collection.json` | Single collection with all endpoints |
-
-See `QUICKSTART.md` for more details.
-
 ## Quick Start
 
-### Using the Consolidated Collection
+### Using the Filtered Collection (Recommended)
+
+The filtered collection contains only endpoints that match the official API documentation.
 
 1. Open Postman
-2. Import `beeSuite_consolidated_API_collection.json`
+2. Import `beeSuite Filtered Collection.postman_collection.json`
+3. Configure your base URLs in Postman environments
+4. Select the environment and start testing
+
+### Using the Original Collection
+
+The original collection contains all endpoints including those not in the official API docs.
+
+1. Open Postman
+2. Import `beeSuite Updated API Collection.postman_collection.json`
 3. Configure your base URLs in Postman environments
 4. Select the environment and start testing
 
